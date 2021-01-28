@@ -1,0 +1,1 @@
+{"version":3,"file":"MemoryGame.js","sourceRoot":"","sources":["MemoryGame.ts"],"names":[],"mappings":"AAAA,IAAU,UAAU,CAqBnB;AArBD,WAAU,UAAU;IASpB,IAAI,SAAS,GAAsB;QAC/B,eAAe;QACf;YACI,KAAK,EAAE,SAAS;YAChB,SAAS,EAAE,kBAAkB;YAC7B,SAAS,EAAE,EAAE;YACb,OAAO,EAAE,CAAC;SACb;KACJ,CAAC;AAIF,CAAC,EArBS,UAAU,KAAV,UAAU,QAqBnB"}
