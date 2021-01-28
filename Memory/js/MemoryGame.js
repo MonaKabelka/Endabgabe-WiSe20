@@ -1,8 +1,8 @@
 var MemoryGame;
 (function (MemoryGame) {
-    // Wrapper für die Buttons als Variablen
-    var btnWrapper = document.getElementById("buttons");
-    // Buttons erstellen
+    // Wrapper für die Buttons als Variable
+    var btnWrapper = document.getElementById("buttonsContainer");
+    // Buttons erstellen in Wrapper
     var btnEasy = document.createElement("button");
     btnEasy.innerHTML = "Easy"; //wieso wird nur text von letztem button angezeigt?
     btnWrapper.appendChild(btnEasy);
@@ -13,6 +13,7 @@ var MemoryGame;
     btnHard.innerHTML = "Hard";
     btnWrapper.appendChild(btnHard);
     // geht das mit den buttons auch kürzer?
+    // 
     btnEasy.addEventListener("click", function () {
         console.log("Difficulty: Easy");
         btnEasy.classList.add("hidden");
