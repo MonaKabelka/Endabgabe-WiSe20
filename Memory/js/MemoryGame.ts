@@ -15,7 +15,7 @@ namespace MemoryGame {
     btnHard.innerHTML = "Hard";
     btnWrapper.appendChild(btnHard);
 
-    // geht das mit den buttons auch kürzer???
+    // geht das mit den buttons auch kürzer??
     // 
     btnEasy.addEventListener("click", function (): void {
         console.log("Difficulty: Easy");
