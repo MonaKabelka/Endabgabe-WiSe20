@@ -47,9 +47,7 @@ namespace MemoryGame {
 
     let allCards: CardsInterface[] = [ //Muss man jedes Objekt zweimal erstellen?? Kann man das nicht mit for schleife zweimal erstellen? Wie soll das dann mit dem Satz gehen?
         {
-            color: "#CCFFCA",
-            pictogram: "fas fa-bolt",
-            scentence: "",
+            
             compare: 1
         },
         {

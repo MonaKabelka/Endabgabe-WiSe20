@@ -40,6 +40,15 @@ h1 {
     align-items: center;
 }
 
+img {
+    height: 200px;
+    width: 200px;
+}
+
+button {
+    margin: 0px 10px 0px 10px;
+}
+
  /* #cardContainer >div {
      padding: 30px;
      width: 150px;
