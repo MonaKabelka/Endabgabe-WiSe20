@@ -1,6 +1,6 @@
 html {
     font-family: Arial, Helvetica, sans-serif;
-    background: #718ca5;
+    background: #648d7f;
     display: flex;
     justify-content: center;
 }
@@ -20,7 +20,7 @@ h1 {
     display: none;
 }
 
-.containerLightMedium {
+.containerEasyMedium {
     display: grid;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -28,7 +28,7 @@ h1 {
     grid-gap: 1em;
     justify-items: center;
     align-items: center;
- }
+}
 
 .containerHard {
     display: grid;
@@ -38,11 +38,11 @@ h1 {
     grid-gap: 1em;
     justify-items: center;
     align-items: center;
- }
+}
 
- #cardContainer >div {
+ /* #cardContainer >div {
      padding: 30px;
      width: 150px;
      height: 150px;
- }
+ } */
 
