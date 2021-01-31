@@ -1,42 +1,4 @@
 namespace MemoryGame {
-    // Wrapper für die Buttons als Variable
-    const btnWrapper: HTMLElement = document.getElementById("buttonsContainer");
-
-    // Buttons erstellen in Wrapper
-    let btnEasy: HTMLButtonElement = document.createElement("button");
-    btnEasy.innerHTML = "Easy"; //wieso wird nur text von letztem button angezeigt?
-    btnWrapper.appendChild(btnEasy);
-
-    let btnMedium: HTMLButtonElement = document.createElement("button");
-    btnMedium.innerHTML = "Medium";
-    btnWrapper.appendChild(btnMedium);
-
-    let btnHard: HTMLButtonElement = document.createElement("button");
-    btnHard.innerHTML = "Hard";
-    btnWrapper.appendChild(btnHard);
-
-    // Eventlistener für die Buttons
-    btnEasy.addEventListener("click", function (): void {
-        console.log("Difficulty: Easy");
-        hideBtns ();
-    });
-
-    btnMedium.addEventListener("click", function (): void {
-        console.log("Difficulty: Medium");
-        hideBtns ();
-    });
-
-    btnHard.addEventListener("click", function (): void {
-        console.log("Difficulty: Hard");
-        hideBtns ();
-    });
-
-    // Funktion zum verstecken von den Buttons
-    function hideBtns (): void {
-        btnEasy.classList.add("hidden");
-        btnHard.classList.add("hidden");
-        btnMedium.classList.add("hidden");
-    }
 
     // Interface für Objekte von Karten _________________________________________________________________________________________________________
     interface CardsInterface {
@@ -44,7 +6,7 @@ namespace MemoryGame {
         compare: number;
     }
 
-    let easyCards: CardsInterface[] = [ 
+    let easyCards: CardsInterface[] = [
         // Kartenpaar 1
         {
             pic: "material/EasyCards/1.png",
@@ -83,7 +45,7 @@ namespace MemoryGame {
         }
     ];
 
-    let mediumCards: CardsInterface[] = [ 
+    let mediumCards: CardsInterface[] = [
         // Kartenpaar 1
         {
             pic: "material/MediumCards/1.png",
@@ -158,7 +120,7 @@ namespace MemoryGame {
         }
     ];
 
-    let hardCards: CardsInterface[] = [ 
+    let hardCards: CardsInterface[] = [
         // Kartenpaar 1
         {
             pic: "material/HardCards/1.png",
@@ -305,6 +267,67 @@ namespace MemoryGame {
         }
     ];
 
-    let cardDOMElement: HTMLElement;
+    let emptyArray: CardsInterface[] = [
 
+    ];
+
+    // Wrapper für die Buttons als Variable
+    const btnWrapper: HTMLElement = document.getElementById("buttonsContainer");
+
+    // Buttons erstellen in Wrapper
+    let btnEasy: HTMLButtonElement = document.createElement("button");
+    btnEasy.innerHTML = "Easy"; //wieso wird nur text von letztem button angezeigt?
+    btnWrapper.appendChild(btnEasy);
+
+    let btnMedium: HTMLButtonElement = document.createElement("button");
+    btnMedium.innerHTML = "Medium";
+    btnWrapper.appendChild(btnMedium);
+
+    let btnHard: HTMLButtonElement = document.createElement("button");
+    btnHard.innerHTML = "Hard";
+    btnWrapper.appendChild(btnHard);
+
+    // Eventlistener für die Buttons
+    btnEasy.addEventListener("click", function (): void {
+        console.log("Difficulty: Easy");
+        hideBtns();
+        emptyArray = easyCards;
+        createCard("containerEasyMedium");
+    });
+
+    btnMedium.addEventListener("click", function (): void {
+        console.log("Difficulty: Medium");
+        hideBtns();
+        emptyArray = mediumCards;
+        createCard("containerEasyMedium");
+    });
+
+    btnHard.addEventListener("click", function (): void {
+        console.log("Difficulty: Hard");
+        hideBtns();
+        emptyArray = hardCards;
+        createCard("containerHard");
+    });
+
+    // Funktion zum verstecken von den Buttons
+    function hideBtns(): void {
+        btnEasy.classList.add("hidden");
+        btnHard.classList.add("hidden");
+        btnMedium.classList.add("hidden");
+    }
+
+    let container: HTMLElement = document.getElementById("cardContainer");
+
+    function createCard(klasse: string): void { //kann man ein array als argument übergeben?? idk
+        // Container leeren
+        container.innerHTML = "";
+        container.classList.add(klasse);
+
+        for (let index: number = 0; index < emptyArray.length; index++) {
+            let newCard: HTMLElement = document.createElement("div");
+            newCard.innerHTML = "<img src=" + emptyArray[index].pic + ">";
+            
+            container.appendChild(newCard);
+        }
+    }
 }
