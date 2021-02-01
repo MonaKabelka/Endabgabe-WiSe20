@@ -411,7 +411,7 @@ var MemoryGame;
         }
     }
     var test;
-    test = Math.floor(Math.random() * 9);
-    console.log(test); //verhindern dass gleiche nummern gewählt werden; 
+    test = Math.floor(Math.random() * 9); //-> *9 = random Zahlen von 0-8 (Easy)
+    console.log(test); //verhindern dass gleiche nummern gewählt werden; verhindern dass schon gewählte Variablen nochmal ausgewählt werden (boolean found im object)
 })(MemoryGame || (MemoryGame = {}));
 //# sourceMappingURL=MemoryGame.js.map
