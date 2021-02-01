@@ -318,16 +318,65 @@ namespace MemoryGame {
 
     let container: HTMLElement = document.getElementById("cardContainer");
 
-    function createCard(klasse: string): void { //kann man ein array als argument übergeben?? idk
+    function createCard(grid: string): void { //kann man ein array als argument übergeben?? idk
         // Container leeren
         container.innerHTML = "";
-        container.classList.add(klasse);
+        container.classList.add(grid);
 
         for (let index: number = 0; index < emptyArray.length; index++) {
             let newCard: HTMLElement = document.createElement("div");
-            newCard.innerHTML = "<img src=" + emptyArray[index].pic + ">";
-            
+            newCard.classList.add("cardDiv" + index);
+            newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
+            newCard.addEventListener("click", function (): void {
+                flipCard(index);
+            });
+
             container.appendChild(newCard);
         }
     }
+
+    function flipCard (index: number): void {
+        console.log ("flipflip");
+        let container: HTMLElement = document.querySelector(".cardDiv" + index);
+
+        container.innerHTML = "<img src=" + emptyArray[index].pic + ">";
+
+        compareCards(index);
+
+        setTimeout(function (): void {
+            container.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
+        },         3000);
+    }
+
+    let firstMove: boolean = true;
+
+    function compareCards (index: number): void {
+        console.log ("comparing");
+
+        let firstCardChoice: number;
+        let secondCardChoice: number;
+
+        if (firstMove == true) {
+            firstCardChoice = emptyArray[index].compare;
+            firstMove = false;
+        } else {
+            secondCardChoice = emptyArray[index].compare;
+            if (firstCardChoice == secondCardChoice) {
+                    //Score vom jeweiligen Spieler hoch
+                    //hidden
+                    console.log ("Richtig");
+                    firstMove = true;
+            }   else {
+                firstMove = true;
+                console.log ("Falsch");
+                console.log (firstCardChoice);
+                console.log (secondCardChoice);
+                // Karten umdrehen
+                // 
+            }
+            
+        }
+
+    }
+
 }

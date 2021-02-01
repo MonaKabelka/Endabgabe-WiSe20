@@ -297,14 +297,57 @@ var MemoryGame;
         btnMedium.classList.add("hidden");
     }
     var container = document.getElementById("cardContainer");
-    function createCard(klasse) {
+    function createCard(grid) {
         // Container leeren
         container.innerHTML = "";
-        container.classList.add(klasse);
-        for (var index = 0; index < emptyArray.length; index++) {
+        container.classList.add(grid);
+        var _loop_1 = function (index) {
             var newCard = document.createElement("div");
-            newCard.innerHTML = "<img src=" + emptyArray[index].pic + ">";
+            newCard.classList.add("cardDiv" + index);
+            newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
+            newCard.addEventListener("click", function () {
+                flipCard(index);
+            });
             container.appendChild(newCard);
+        };
+        for (var index = 0; index < emptyArray.length; index++) {
+            _loop_1(index);
+        }
+    }
+    function flipCard(index) {
+        console.log("flipflip");
+        var container = document.querySelector(".cardDiv" + index);
+        container.innerHTML = "<img src=" + emptyArray[index].pic + ">";
+        compareCards(index);
+        setTimeout(function () {
+            container.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
+        }, 3000);
+    }
+    var firstMove = true;
+    function compareCards(index) {
+        console.log("comparing");
+        var firstCardChoice;
+        var secondCardChoice;
+        if (firstMove == true) {
+            firstCardChoice = emptyArray[index].compare;
+            firstMove = false;
+        }
+        else {
+            secondCardChoice = emptyArray[index].compare;
+            if (firstCardChoice == secondCardChoice) {
+                //Score vom jeweiligen Spieler hoch
+                //hidden
+                console.log("Richtig");
+                firstMove = true;
+            }
+            else {
+                firstMove = true;
+                console.log("Falsch");
+                console.log(firstCardChoice);
+                console.log(secondCardChoice);
+                // Karten umdrehen
+                // 
+            }
         }
     }
 })(MemoryGame || (MemoryGame = {}));
