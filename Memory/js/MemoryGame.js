@@ -405,7 +405,7 @@ var MemoryGame;
                 console.log("Falsch");
                 console.log(firstCardChoice);
                 console.log(secondCardChoice);
-                // Karten umdrehen
+                // Karten wieder umdrehen
                 // 
             }
         }
