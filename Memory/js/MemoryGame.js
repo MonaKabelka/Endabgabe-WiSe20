@@ -1,11 +1,12 @@
 var MemoryGame;
 (function (MemoryGame) {
+    /*Array, das alle Spielkarten für den einfachen Schwierigkeitsgrad enthält (als Objekte)*/
     var easyCards = [
         // Kartenpaar 1
         {
             pic: "material/EasyCards/1.png",
             compare: 1,
-            found: false
+            found: false //Boolean für gefunden/noch nicht gefunden
         },
         {
             pic: "material/EasyCards/1.png",
@@ -46,6 +47,7 @@ var MemoryGame;
             found: false
         }
     ];
+    /*Alle Spielkarten für den mittleren Schwierigkeitsgrad*/
     var mediumCards = [
         // Kartenpaar 1
         {
@@ -136,6 +138,7 @@ var MemoryGame;
             found: false
         }
     ];
+    /*Alle Spielkarten für den mittleren Schwierigkeitsgrad*/
     var hardCards = [
         // Kartenpaar 1
         {
@@ -314,11 +317,12 @@ var MemoryGame;
             found: false
         }
     ];
-    var emptyArray = [];
-    // Wrapper für die Buttons als Variable
+    /*Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades gepusht werden*/
+    var levelCards = [];
+    /*Wrapper für die Buttons als Variable*/
     var btnWrapper = document.getElementById("buttonsContainer");
     var firstMove = true;
-    // Buttons erstellen in Wrapper
+    /*Buttons erstellen in Wrapper*/
     var btnEasy = document.createElement("button");
     btnEasy.innerHTML = "Easy"; //wieso wird nur text von letztem button angezeigt?
     btnWrapper.appendChild(btnEasy);
@@ -328,36 +332,40 @@ var MemoryGame;
     var btnHard = document.createElement("button");
     btnHard.innerHTML = "Hard";
     btnWrapper.appendChild(btnHard);
-    // Eventlistener für die Buttons
+    /*Eventlistener für die Buttons*/
     btnEasy.addEventListener("click", function () {
         console.log("Difficulty: Easy");
-        hideBtns();
-        emptyArray = easyCards;
-        createCard("containerEasyMedium");
+        hideBtns(); /*Die Buttons für die Schwierigkeitsgrade werden versteckt*/
+        levelCards = easyCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
+        createCard("containerEasyMedium"); /*Karten werden in Container mit grid (in CSS definiert) kreiirt*/
+        mixCards();
     });
     btnMedium.addEventListener("click", function () {
         console.log("Difficulty: Medium");
         hideBtns();
-        emptyArray = mediumCards;
+        levelCards = mediumCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
         createCard("containerEasyMedium");
+        mixCards();
     });
     btnHard.addEventListener("click", function () {
         console.log("Difficulty: Hard");
         hideBtns();
-        emptyArray = hardCards;
+        levelCards = hardCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
         createCard("containerHard");
+        mixCards();
     });
-    // Funktion zum verstecken von den Buttons
+    /*Funktion zum verstecken von den Buttons*/
     function hideBtns() {
         btnEasy.classList.add("hidden");
         btnHard.classList.add("hidden");
         btnMedium.classList.add("hidden");
     }
+    /*Variable für das div im HTML, in welches die Karten gepusht werden sollen*/
     var container = document.getElementById("cardContainer");
     function createCard(grid) {
-        // Container leeren
+        /*Container leeren*/
         container.innerHTML = "";
-        container.classList.add(grid);
+        container.classList.add(grid); /*Die richtige Klasse für das Grid in CSS bei Funktionsaufruf als Argument übergeben*/
         var _loop_1 = function (index) {
             var newCard = document.createElement("div");
             newCard.classList.add("cardDiv" + index);
@@ -367,14 +375,16 @@ var MemoryGame;
             });
             container.appendChild(newCard);
         };
-        for (var index = 0; index < emptyArray.length; index++) {
+        /*Eine Karte als HTML-Element erstellen*/
+        for (var index = 0; index < levelCards.length; index++) {
             _loop_1(index);
         }
     }
+    /*Karte umdrehen*/
     function flipCard(index) {
         console.log("flipflip");
         var container = document.querySelector(".cardDiv" + index);
-        container.innerHTML = "<img src=" + emptyArray[index].pic + ">";
+        container.innerHTML = "<img src=" + levelCards[index].pic + ">";
         compareCards(index);
         setTimeout(function () {
             container.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
@@ -386,13 +396,13 @@ var MemoryGame;
         console.log("comparing");
         if (firstMove == true) {
             console.log("HALLO");
-            firstCardChoice = emptyArray[index].compare;
+            firstCardChoice = levelCards[index].compare;
             console.log(firstCardChoice);
             firstMove = false;
         }
         else {
             console.log("TSCHÜSS");
-            secondCardChoice = emptyArray[index].compare;
+            secondCardChoice = levelCards[index].compare;
             if (firstCardChoice == secondCardChoice) {
                 //Score vom jeweiligen Spieler hoch
                 //hidden
@@ -406,12 +416,17 @@ var MemoryGame;
                 console.log(firstCardChoice);
                 console.log(secondCardChoice);
                 // Karten wieder umdrehen
-                // 
             }
         }
     }
+    /*Karten im levelCards Array mischen*/
+    function mixCards() {
+        levelCards.sort(function () { return 0.5 - Math.random(); });
+    }
+    /*Computer*/
     var test;
     test = Math.floor(Math.random() * 9); //-> *9 = random Zahlen von 0-8 (Easy)
     console.log(test); //verhindern dass gleiche nummern gewählt werden; verhindern dass schon gewählte Variablen nochmal ausgewählt werden (boolean found im object)
+    // result.textContent = cardsWon.length; Counter
 })(MemoryGame || (MemoryGame = {}));
 //# sourceMappingURL=MemoryGame.js.map

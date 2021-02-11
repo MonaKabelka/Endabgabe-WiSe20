@@ -1,18 +1,19 @@
 namespace MemoryGame {
-
-    // Interface für Objekte von Karten _________________________________________________________________________________________________________
+   
+    /*Interface für Objekte von Karten*/
     interface CardsInterface {
         pic: string;
         compare: number;
         found: boolean;
     }
 
+    /*Array, das alle Spielkarten für den einfachen Schwierigkeitsgrad enthält (als Objekte)*/
     let easyCards: CardsInterface[] = [
         // Kartenpaar 1
         {
-            pic: "material/EasyCards/1.png",
-            compare: 1,
-            found: false
+            pic: "material/EasyCards/1.png", //Das Bild
+            compare: 1, //Vergleichsindikator
+            found: false //Boolean für gefunden/noch nicht gefunden
         },
         {
             pic: "material/EasyCards/1.png",
@@ -54,6 +55,7 @@ namespace MemoryGame {
         }
     ];
 
+    /*Alle Spielkarten für den mittleren Schwierigkeitsgrad*/
     let mediumCards: CardsInterface[] = [
         // Kartenpaar 1
         {
@@ -145,6 +147,7 @@ namespace MemoryGame {
         }
     ];
 
+    /*Alle Spielkarten für den mittleren Schwierigkeitsgrad*/
     let hardCards: CardsInterface[] = [
         // Kartenpaar 1
         {
@@ -324,15 +327,16 @@ namespace MemoryGame {
         }
     ];
 
-    let emptyArray: CardsInterface[] = [
+    /*Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades gepusht werden*/
+    let levelCards: CardsInterface[] = [
 
     ];
 
-    // Wrapper für die Buttons als Variable
+    /*Wrapper für die Buttons als Variable*/
     const btnWrapper: HTMLElement = document.getElementById("buttonsContainer");
     let firstMove: boolean = true;
 
-    // Buttons erstellen in Wrapper
+    /*Buttons erstellen in Wrapper*/
     let btnEasy: HTMLButtonElement = document.createElement("button");
     btnEasy.innerHTML = "Easy"; //wieso wird nur text von letztem button angezeigt?
     btnWrapper.appendChild(btnEasy);
@@ -345,43 +349,48 @@ namespace MemoryGame {
     btnHard.innerHTML = "Hard";
     btnWrapper.appendChild(btnHard);
 
-    // Eventlistener für die Buttons
+    /*Eventlistener für die Buttons*/
     btnEasy.addEventListener("click", function (): void {
         console.log("Difficulty: Easy");
-        hideBtns();
-        emptyArray = easyCards;
-        createCard("containerEasyMedium");
+        hideBtns(); /*Die Buttons für die Schwierigkeitsgrade werden versteckt*/
+        levelCards = easyCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
+        createCard("containerEasyMedium"); /*Karten werden in Container mit grid (in CSS definiert) kreiirt*/
+        mixCards();
     });
 
     btnMedium.addEventListener("click", function (): void {
         console.log("Difficulty: Medium");
         hideBtns();
-        emptyArray = mediumCards;
+        levelCards = mediumCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
         createCard("containerEasyMedium");
+        mixCards();
     });
 
     btnHard.addEventListener("click", function (): void {
         console.log("Difficulty: Hard");
         hideBtns();
-        emptyArray = hardCards;
+        levelCards = hardCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
         createCard("containerHard");
+        mixCards();
     });
 
-    // Funktion zum verstecken von den Buttons
+    /*Funktion zum verstecken von den Buttons*/
     function hideBtns(): void {
         btnEasy.classList.add("hidden");
         btnHard.classList.add("hidden");
         btnMedium.classList.add("hidden");
     }
 
+    /*Variable für das div im HTML, in welches die Karten gepusht werden sollen*/
     let container: HTMLElement = document.getElementById("cardContainer");
 
-    function createCard(grid: string): void { //kann man ein array als argument übergeben?? idk
-        // Container leeren
+    function createCard(grid: string): void {
+        /*Container leeren*/
         container.innerHTML = "";
-        container.classList.add(grid);
+        container.classList.add(grid); /*Die richtige Klasse für das Grid in CSS bei Funktionsaufruf als Argument übergeben*/
 
-        for (let index: number = 0; index < emptyArray.length; index++) {
+        /*Eine Karte als HTML-Element erstellen*/
+        for (let index: number = 0; index < levelCards.length; index++) { 
             let newCard: HTMLElement = document.createElement("div");
             newCard.classList.add("cardDiv" + index);
             newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
@@ -393,11 +402,12 @@ namespace MemoryGame {
         }
     }
 
+    /*Karte umdrehen*/
     function flipCard (index: number): void {
         console.log ("flipflip");
         let container: HTMLElement = document.querySelector(".cardDiv" + index);
 
-        container.innerHTML = "<img src=" + emptyArray[index].pic + ">";
+        container.innerHTML = "<img src=" + levelCards[index].pic + ">";
 
         compareCards(index);
 
@@ -414,12 +424,12 @@ namespace MemoryGame {
 
         if (firstMove == true) {
             console.log("HALLO");
-            firstCardChoice = emptyArray[index].compare;
+            firstCardChoice = levelCards[index].compare;
             console.log(firstCardChoice);
             firstMove = false;
         } else {
             console.log("TSCHÜSS");
-            secondCardChoice = emptyArray[index].compare;
+            secondCardChoice = levelCards[index].compare;
             if (firstCardChoice == secondCardChoice) {
                     //Score vom jeweiligen Spieler hoch
                     //hidden
@@ -432,15 +442,21 @@ namespace MemoryGame {
                 console.log (firstCardChoice);
                 console.log (secondCardChoice);
                 // Karten wieder umdrehen
-                // 
             }
         }
     }
 
+    /*Karten im levelCards Array mischen*/
+    function mixCards(): void { 
+        levelCards.sort(() => 0.5 - Math.random());
+    }
+        
     
+    /*Computer*/
     let test: number;
     test = Math.floor(Math.random() * 9); //-> *9 = random Zahlen von 0-8 (Easy)
     console.log (test); //verhindern dass gleiche nummern gewählt werden; verhindern dass schon gewählte Variablen nochmal ausgewählt werden (boolean found im object)
 
+    // result.textContent = cardsWon.length; Counter
 
 }
