@@ -1,18 +1,18 @@
 namespace MemoryGame {
    
-    /*Interface für Objekte von Karten*/
+    //Interface für Objekte von Karten mit Keys für: Hintergrundbild, Vergleichsindikator für das passende Kartenpaar, und ob die Karte gefunden wurde oder nicht
     interface CardsInterface {
         pic: string;
         compare: number;
         found: boolean;
     }
 
-    /*Array, das alle Spielkarten für den einfachen Schwierigkeitsgrad enthält (als Objekte)*/
+    //Array, das alle Spielkarten für den einfachen Schwierigkeitsgrad enthält (als Objekte)
     let easyCards: CardsInterface[] = [
         // Kartenpaar 1
         {
-            pic: "material/EasyCards/1.png", //Das Bild
-            compare: 1, //Vergleichsindikator
+            pic: "material/EasyCards/1.png", //Jeweiliges Hintergrundbild
+            compare: 1, //Vergleichsindikator für die zwei zusammengehörenden Kartenpaare
             found: false //Boolean für gefunden/noch nicht gefunden
         },
         {
@@ -55,7 +55,7 @@ namespace MemoryGame {
         }
     ];
 
-    /*Alle Spielkarten für den mittleren Schwierigkeitsgrad*/
+    //Alle Spielkarten für den mittleren Schwierigkeitsgrad
     let mediumCards: CardsInterface[] = [
         // Kartenpaar 1
         {
@@ -147,7 +147,7 @@ namespace MemoryGame {
         }
     ];
 
-    /*Alle Spielkarten für den mittleren Schwierigkeitsgrad*/
+    //Alle Spielkarten für den schwersten Schwierigkeitsgrad
     let hardCards: CardsInterface[] = [
         // Kartenpaar 1
         {
@@ -327,18 +327,22 @@ namespace MemoryGame {
         }
     ];
 
-    /*Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades gepusht werden*/
+    //Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades gepusht werden
     let levelCards: CardsInterface[] = [
 
     ];
 
-    /*Wrapper für die Buttons als Variable*/
+    //Wrapper für die Buttons als Variable
     const btnWrapper: HTMLElement = document.getElementById("buttonsContainer");
+    //Variable für Resfresh Button in HTML
+    const refreshBtn: HTMLElement = document.querySelector("#fa-redo-alt");
+    //Boolean, für den ersten/zweiten Zug
     let firstMove: boolean = true;
 
-    /*Buttons erstellen in Wrapper*/
+
+    //Buttons erstellen in Wrapper
     let btnEasy: HTMLButtonElement = document.createElement("button");
-    btnEasy.innerHTML = "Easy"; //wieso wird nur text von letztem button angezeigt?
+    btnEasy.innerHTML = "Easy";
     btnWrapper.appendChild(btnEasy);
 
     let btnMedium: HTMLButtonElement = document.createElement("button");
@@ -349,19 +353,19 @@ namespace MemoryGame {
     btnHard.innerHTML = "Hard";
     btnWrapper.appendChild(btnHard);
 
-    /*Eventlistener für die Buttons*/
+    //Eventlistener für die Buttons
     btnEasy.addEventListener("click", function (): void {
         console.log("Difficulty: Easy");
-        hideBtns(); /*Die Buttons für die Schwierigkeitsgrade werden versteckt*/
-        levelCards = easyCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
-        createCard("containerEasyMedium"); /*Karten werden in Container mit grid (in CSS definiert) kreiirt*/
-        mixCards();
+        hideBtns(); //Die Buttons für die Schwierigkeitsgrade werden versteckt mit einer Klasse in CSS
+        levelCards = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren levelCards gespeichert
+        createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
+        mixCards(); //Funktionsaufruf für das Mischen des Indexes
     });
 
     btnMedium.addEventListener("click", function (): void {
         console.log("Difficulty: Medium");
         hideBtns();
-        levelCards = mediumCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
+        levelCards = mediumCards; //Alle Karten aus dem mediumCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerEasyMedium");
         mixCards();
     });
@@ -369,27 +373,27 @@ namespace MemoryGame {
     btnHard.addEventListener("click", function (): void {
         console.log("Difficulty: Hard");
         hideBtns();
-        levelCards = hardCards; /*Alle Karten aus dem easyCards Array sind nun im vorher leeren levelCards*/
+        levelCards = hardCards; //Alle Karten aus dem hardCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerHard");
         mixCards();
     });
 
-    /*Funktion zum verstecken von den Buttons*/
+    //Funktion zum verstecken von den Buttons mit CSS Klasse
     function hideBtns(): void {
         btnEasy.classList.add("hidden");
-        btnHard.classList.add("hidden");
         btnMedium.classList.add("hidden");
+        btnHard.classList.add("hidden");
     }
 
-    /*Variable für das div im HTML, in welches die Karten gepusht werden sollen*/
+    //Variable für das div im HTML, in welches die Karten gepusht werden sollen
     let container: HTMLElement = document.getElementById("cardContainer");
 
     function createCard(grid: string): void {
-        /*Container leeren*/
+        //Container leeren
         container.innerHTML = "";
-        container.classList.add(grid); /*Die richtige Klasse für das Grid in CSS bei Funktionsaufruf als Argument übergeben*/
+        container.classList.add(grid); //Die richtige Klasse für das Grid in CSS bei Funktionsaufruf als Argument übergeben
 
-        /*Eine Karte als HTML-Element erstellen*/
+        //Eine Karte als HTML-Element erstellen
         for (let index: number = 0; index < levelCards.length; index++) { 
             let newCard: HTMLElement = document.createElement("div");
             newCard.classList.add("cardDiv" + index);
@@ -397,12 +401,11 @@ namespace MemoryGame {
             newCard.addEventListener("click", function (): void {
                 flipCard(index);
             });
-
             container.appendChild(newCard);
         }
     }
 
-    /*Karte umdrehen*/
+    //Karte umdrehen
     function flipCard (index: number): void {
         console.log ("flipflip");
         let container: HTMLElement = document.querySelector(".cardDiv" + index);
@@ -446,17 +449,29 @@ namespace MemoryGame {
         }
     }
 
-    /*Karten im levelCards Array mischen*/
+    //Karten im levelCards Array mischen
     function mixCards(): void { 
         levelCards.sort(() => 0.5 - Math.random());
     }
         
     
-    /*Computer*/
+    //Computer
     let test: number;
     test = Math.floor(Math.random() * 9); //-> *9 = random Zahlen von 0-8 (Easy)
     console.log (test); //verhindern dass gleiche nummern gewählt werden; verhindern dass schon gewählte Variablen nochmal ausgewählt werden (boolean found im object)
 
-    // result.textContent = cardsWon.length; Counter
+    // result.textContent = cardsWon.length; Counter Chrissi?
+
+    //Spiel beenden bzw Neustarten FUNKTIONIERT NICHT!!!!
+    function restartGame(): void {
+        levelCards = [];
+        btnEasy.classList.remove("hidden");
+        btnHard.classList.remove("hidden");
+        btnMedium.classList.remove("hidden");
+    }
+    
+    refreshBtn.addEventListener("click", function(): void {
+        restartGame();
+    });
 
 }
