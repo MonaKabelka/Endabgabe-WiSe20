@@ -325,6 +325,8 @@ var MemoryGame;
     var refreshBtn = document.querySelector("#fa-redo-alt");
     //Boolean, für den ersten/zweiten Zug
     var firstMove = true;
+    var humanMove = false;
+    var computerMove = true;
     //Buttons erstellen in Wrapper
     var btnEasy = document.createElement("button");
     btnEasy.innerHTML = "Easy";
@@ -342,6 +344,7 @@ var MemoryGame;
         levelCards = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
         mixCards(); //Funktionsaufruf für das Mischen des Indexes
+        computer();
     });
     btnMedium.addEventListener("click", function () {
         console.log("Difficulty: Medium");
@@ -389,36 +392,60 @@ var MemoryGame;
         var container = document.querySelector(".cardDiv" + index);
         container.innerHTML = "<img src=" + levelCards[index].pic + ">";
         compareCards(index);
-        setTimeout(function () {
-            container.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
-        }, 3000);
     }
     var firstCardChoice;
     var secondCardChoice;
+    var firstIndex;
+    var secondIndex;
     function compareCards(index) {
         console.log("comparing");
         if (firstMove == true) {
             console.log("HALLO");
             firstCardChoice = levelCards[index].compare;
+            firstIndex = index;
             console.log(firstCardChoice);
             firstMove = false;
         }
         else {
             console.log("TSCHÜSS");
             secondCardChoice = levelCards[index].compare;
+            secondIndex = index;
             if (firstCardChoice == secondCardChoice) {
+                levelCards[firstIndex].found = true;
+                levelCards[secondIndex].found = true;
+                var container1 = document.querySelector(".cardDiv" + firstIndex);
+                container1.classList.add("hidden");
+                var container2 = document.querySelector(".cardDiv" + secondIndex);
+                container2.classList.add("hidden");
                 //Score vom jeweiligen Spieler hoch
-                //hidden
                 //Nutzerwechsel
                 console.log("Richtig");
                 firstMove = true;
+                if (computerMove == true) {
+                    computer();
+                } //else {
+                //     computerMove = true;
+                // }
             }
             else {
+                setTimeout(function () {
+                    var container1 = document.querySelector(".cardDiv" + firstIndex);
+                    container1.innerHTML = "<img src=material/BackCard/Memory-Back.png >";
+                    var container2 = document.querySelector(".cardDiv" + secondIndex);
+                    container2.innerHTML = "<img src=material/BackCard/Memory-Back.png >";
+                }, 3000);
                 firstMove = true;
                 console.log("Falsch");
                 console.log(firstCardChoice);
                 console.log(secondCardChoice);
                 // Karten wieder umdrehen
+                if (computerMove == true) {
+                    computerMove = false;
+                }
+                else {
+                    computerMove = true;
+                    computer();
+                }
             }
         }
     }
@@ -427,19 +454,36 @@ var MemoryGame;
         levelCards.sort(function () { return 0.5 - Math.random(); });
     }
     //Computer
+    function computer() {
+        var randomNumber = [];
+        randomNumber.push(Math.floor(Math.random() * 8));
+        randomNumber.push(Math.floor(Math.random() * 8));
+        if (randomNumber[0] != randomNumber[1]) {
+            if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) {
+                flipCard(randomNumber[0]);
+                flipCard(randomNumber[1]);
+            }
+            else {
+                computer();
+            }
+        }
+        else {
+            computer();
+        }
+    }
     var test;
-    test = Math.floor(Math.random() * 9); //-> *9 = random Zahlen von 0-8 (Easy)
+    test = Math.floor(Math.random() * 8); //-> *8 = random Zahlen von 0-7 (Easy)
     console.log(test); //verhindern dass gleiche nummern gewählt werden; verhindern dass schon gewählte Variablen nochmal ausgewählt werden (boolean found im object)
     // result.textContent = cardsWon.length; Counter Chrissi?
     //Spiel beenden bzw Neustarten FUNKTIONIERT NICHT!!!!
-    function restartGame() {
-        levelCards = [];
-        btnEasy.classList.remove("hidden");
-        btnHard.classList.remove("hidden");
-        btnMedium.classList.remove("hidden");
-    }
-    refreshBtn.addEventListener("click", function () {
-        restartGame();
-    });
+    // function restartGame(): void {
+    //     levelCards = [];
+    //     btnEasy.classList.remove("hidden");
+    //     btnHard.classList.remove("hidden");
+    //     btnMedium.classList.remove("hidden");
+    // }
+    // refreshBtn.addEventListener("click", function(): void {
+    //     restartGame();
+    // });
 })(MemoryGame || (MemoryGame = {}));
 //# sourceMappingURL=MemoryGame.js.map
