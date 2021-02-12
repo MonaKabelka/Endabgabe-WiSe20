@@ -344,7 +344,7 @@ var MemoryGame;
         levelCards = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
         mixCards(); //Funktionsaufruf für das Mischen des Indexes
-        computer();
+        computer(); // Funktionsaufruf für den >Spielzug des Computers
     });
     btnMedium.addEventListener("click", function () {
         console.log("Difficulty: Medium");
@@ -373,33 +373,32 @@ var MemoryGame;
         container.innerHTML = "";
         container.classList.add(grid); //Die richtige Klasse für das Grid in CSS bei Funktionsaufruf als Argument übergeben
         var _loop_1 = function (index) {
-            var newCard = document.createElement("div");
-            newCard.classList.add("cardDiv" + index);
-            newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
+            var newCard = document.createElement("div"); //Div erstellen
+            newCard.classList.add("cardDiv" + index); //Klasse und Indexzahl als Klasse hinzufügen
+            newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>"; //Hintergrundbild hinzufügen (Rückseite)
             newCard.addEventListener("click", function () {
-                flipCard(index);
+                flipCard(index); //Eventlistener: beim klicken Karte umdrehen
             });
-            container.appendChild(newCard);
+            container.appendChild(newCard); //Elemente im Container erstellen
         };
         //Eine Karte als HTML-Element erstellen
         for (var index = 0; index < levelCards.length; index++) {
             _loop_1(index);
         }
     }
-    //Karte umdrehen
+    //Karte umdrehen Funktion
     function flipCard(index) {
-        console.log("flipflip");
-        var container = document.querySelector(".cardDiv" + index);
-        container.innerHTML = "<img src=" + levelCards[index].pic + ">";
-        compareCards(index);
+        console.log("flip");
+        var container = document.querySelector(".cardDiv" + index); //richtigen Container selektieren
+        container.innerHTML = "<img src=" + levelCards[index].pic + ">"; //via innerHTMl das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
+        compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
     }
-    var firstCardChoice;
-    var secondCardChoice;
-    var firstIndex;
-    var secondIndex;
+    var firstCardChoice; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    var secondCardChoice; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    var firstIndex; //Variable um Index beim ersten Klick zu speichern
+    var secondIndex; //Variable um Index beim zweiten Klick zu speichern
     function compareCards(index) {
-        console.log("comparing");
-        if (firstMove == true) {
+        if (firstMove == true) { //if 
             firstCardChoice = levelCards[index].compare;
             firstIndex = index;
             console.log(firstCardChoice);

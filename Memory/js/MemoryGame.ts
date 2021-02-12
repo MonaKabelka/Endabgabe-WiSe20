@@ -362,7 +362,7 @@ namespace MemoryGame {
         levelCards = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
         mixCards(); //Funktionsaufruf für das Mischen des Indexes
-        computer();
+        computer(); // Funktionsaufruf für den >Spielzug des Computers
     });
 
     btnMedium.addEventListener("click", function (): void {
@@ -397,36 +397,32 @@ namespace MemoryGame {
         container.classList.add(grid); //Die richtige Klasse für das Grid in CSS bei Funktionsaufruf als Argument übergeben
 
         //Eine Karte als HTML-Element erstellen
-        for (let index: number = 0; index < levelCards.length; index++) { 
-            let newCard: HTMLElement = document.createElement("div");
-            newCard.classList.add("cardDiv" + index);
-            newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>";
+        for (let index: number = 0; index < levelCards.length; index++) { //durch Array itterieren
+            let newCard: HTMLElement = document.createElement("div"); //Div erstellen
+            newCard.classList.add("cardDiv" + index); //Klasse und Indexzahl als Klasse hinzufügen
+            newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>"; //Hintergrundbild hinzufügen (Rückseite)
             newCard.addEventListener("click", function (): void {
-                flipCard(index);
+                flipCard(index); //Eventlistener: beim klicken Karte umdrehen
             });
-            container.appendChild(newCard);
+            container.appendChild(newCard); //Elemente im Container erstellen
         }
     }
 
-    //Karte umdrehen
-    function flipCard (index: number): void {
-        console.log ("flipflip");
-        let container: HTMLElement = document.querySelector(".cardDiv" + index);
-
-        container.innerHTML = "<img src=" + levelCards[index].pic + ">";
-
-        compareCards(index);
+    //Karte umdrehen Funktion
+    function flipCard (index: number): void { //Index aus levelCards als Argument übergeben (Aufruf in createCard Funktion)
+        console.log ("flip");
+        let container: HTMLElement = document.querySelector(".cardDiv" + index); //richtigen Container selektieren
+        container.innerHTML = "<img src=" + levelCards[index].pic + ">"; //via innerHTMl das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
+        compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
     }
 
-    let firstCardChoice: number;
-    let secondCardChoice: number;
-    let firstIndex: number;
-    let secondIndex: number;
+    let firstCardChoice: number; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    let secondCardChoice: number; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    let firstIndex: number; //Variable um Index beim ersten Klick zu speichern
+    let secondIndex: number; //Variable um Index beim zweiten Klick zu speichern
 
     function compareCards (index: number): void {
-        console.log ("comparing");
-
-        if (firstMove == true) {
+        if (firstMove == true) { //if 
             firstCardChoice = levelCards[index].compare;
             firstIndex = index;
             console.log(firstCardChoice);
