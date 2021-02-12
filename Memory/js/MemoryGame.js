@@ -400,14 +400,12 @@ var MemoryGame;
     function compareCards(index) {
         console.log("comparing");
         if (firstMove == true) {
-            console.log("HALLO");
             firstCardChoice = levelCards[index].compare;
             firstIndex = index;
             console.log(firstCardChoice);
             firstMove = false;
         }
         else {
-            console.log("TSCHÜSS");
             secondCardChoice = levelCards[index].compare;
             secondIndex = index;
             if (firstCardChoice == secondCardChoice) {
@@ -417,7 +415,7 @@ var MemoryGame;
                 container1.classList.add("hidden");
                 var container2 = document.querySelector(".cardDiv" + secondIndex);
                 container2.classList.add("hidden");
-                //Score vom jeweiligen Spieler hoch
+                //Score vom jeweiligen Spieler hochzählen
                 //Nutzerwechsel
                 console.log("Richtig");
                 firstMove = true;
@@ -456,7 +454,7 @@ var MemoryGame;
     //Computer
     function computer() {
         var randomNumber = [];
-        randomNumber.push(Math.floor(Math.random() * 8));
+        randomNumber.push(Math.floor(Math.random() * 8)); //-> *8 = random Zahlen von 0-7 (Easy)
         randomNumber.push(Math.floor(Math.random() * 8));
         if (randomNumber[0] != randomNumber[1]) {
             if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) {
@@ -471,19 +469,5 @@ var MemoryGame;
             computer();
         }
     }
-    var test;
-    test = Math.floor(Math.random() * 8); //-> *8 = random Zahlen von 0-7 (Easy)
-    console.log(test); //verhindern dass gleiche nummern gewählt werden; verhindern dass schon gewählte Variablen nochmal ausgewählt werden (boolean found im object)
-    // result.textContent = cardsWon.length; Counter Chrissi?
-    //Spiel beenden bzw Neustarten FUNKTIONIERT NICHT!!!!
-    // function restartGame(): void {
-    //     levelCards = [];
-    //     btnEasy.classList.remove("hidden");
-    //     btnHard.classList.remove("hidden");
-    //     btnMedium.classList.remove("hidden");
-    // }
-    // refreshBtn.addEventListener("click", function(): void {
-    //     restartGame();
-    // });
 })(MemoryGame || (MemoryGame = {}));
 //# sourceMappingURL=MemoryGame.js.map
