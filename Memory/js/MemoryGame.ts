@@ -1,5 +1,6 @@
 namespace MemoryGame {
-   
+
+
     //Interface für Objekte von Karten mit Keys für: Hintergrundbild, Vergleichsindikator für das passende Kartenpaar, und ob die Karte gefunden wurde oder nicht
     interface CardsInterface {
         pic: string;
@@ -328,9 +329,7 @@ namespace MemoryGame {
     ];
 
     //Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades gepusht werden
-    let levelCards: CardsInterface[] = [
-
-    ];
+    let levelCards: CardsInterface[] = [];
 
     //Wrapper für die Buttons als Variable
     const btnWrapper: HTMLElement = document.getElementById("buttonsContainer");
@@ -371,6 +370,7 @@ namespace MemoryGame {
         levelCards = mediumCards; //Alle Karten aus dem mediumCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerEasyMedium");
         mixCards();
+        computer();
     });
 
     btnHard.addEventListener("click", function (): void {
@@ -379,6 +379,7 @@ namespace MemoryGame {
         levelCards = hardCards; //Alle Karten aus dem hardCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerHard");
         mixCards();
+        computer();
     });
 
     //Funktion zum verstecken von den Buttons mit CSS Klasse
@@ -390,6 +391,8 @@ namespace MemoryGame {
 
     //Variable für das div im HTML, in welches die Karten gepusht werden sollen
     let container: HTMLElement = document.getElementById("cardContainer");
+    let stopMoves: boolean = true;
+    let winCounter: number = 0;
 
     function createCard(grid: string): void {
         //Container leeren
@@ -402,15 +405,17 @@ namespace MemoryGame {
             newCard.classList.add("cardDiv" + index); //Klasse und Indexzahl als Klasse hinzufügen
             newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>"; //Hintergrundbild hinzufügen (Rückseite)
             newCard.addEventListener("click", function (): void {
-                flipCard(index); //Eventlistener: beim klicken Karte umdrehen
+                if (stopMoves == true) {
+                    flipCard(index); //Eventlistener: beim klicken Karte umdrehen
+                 }
             });
             container.appendChild(newCard); //Elemente im Container erstellen
         }
     }
 
     //Karte umdrehen Funktion
-    function flipCard (index: number): void { //Index aus levelCards als Argument übergeben (Aufruf in createCard Funktion)
-        console.log ("flip");
+    function flipCard(index: number): void { //Index aus levelCards als Argument übergeben (Aufruf in createCard Funktion)
+        console.log("flip");
         let container: HTMLElement = document.querySelector(".cardDiv" + index); //richtigen Container selektieren
         container.innerHTML = "<img src=" + levelCards[index].pic + ">"; //via innerHTMl das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
         compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
@@ -422,67 +427,88 @@ namespace MemoryGame {
     let secondIndex: number; //Variable um Index beim zweiten Klick zu speichern
 
     //Funktion um Karten zu vergleichen
-    function compareCards (index: number): void {
+    function compareCards(index: number): void {
         if (firstMove == true) { //wenn boolean true ist, dann ist es der erste von zwei Zügen
             firstCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
             firstIndex = index; //Der Index wird in einer Variable gespeichert
             firstMove = false; //Boolean für den ersten Zug wird auf false gestellt
         } else {
-            secondCardChoice = levelCards[index].compare; //
-            secondIndex = index;
-            if (firstCardChoice == secondCardChoice) {
+            stopMoves = false;
+            setTimeout(function (): void {
+                secondCardChoice = levelCards[index].compare; //
+                secondIndex = index;
+                if (firstCardChoice == secondCardChoice) {
                     levelCards[firstIndex].found = true;
                     levelCards[secondIndex].found = true;
 
                     let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex);
                     container1.classList.add("hidden");
-                   
+
                     let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex);
                     container2.classList.add("hidden");
 
                     //Score vom jeweiligen Spieler hochzählen
-                    //Nutzerwechsel
-                    console.log ("Richtig");
+                    console.log("Richtig");
                     firstMove = true;
+                    stopMoves = true;
+                    counter();
+                    winCounter++;
+                    
+                    
                     if (computerMove == true) {
                         computer();
-                     } //else {
+                    } //else {
                     //     computerMove = true;
                     // }
+                    winAlert();
+                } else {
 
-            }   else {
-                setTimeout(function (): void {
                     let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex);
                     container1.innerHTML = "<img src=material/BackCard/Memory-Back.png >";
-                    
+
                     let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex);
                     container2.innerHTML = "<img src=material/BackCard/Memory-Back.png >";
-                 
-                },         3000);
-                firstMove = true;
-                console.log ("Falsch");
-                console.log (firstCardChoice);
-                console.log (secondCardChoice);
-                // Karten wieder umdrehen
-                if (computerMove == true) {
-                    computerMove = false;
-                } else {
-                    computerMove = true;
-                    computer();
+
+
+                    firstMove = true;
+                    console.log("Falsch");
+                    stopMoves = true;
+                    // Karten wieder umdrehen
+                    if (computerMove == true) {
+                        computerMove = false;
+                    } else {
+                        computerMove = true;
+                        computer();
+                    }
                 }
-            }
+            },         3000);
         }
     }
 
     //Karten im levelCards Array mischen
-    function mixCards(): void { 
+    function mixCards(): void {
         levelCards.sort(() => 0.5 - Math.random());
     }
-        
-    
+
+    let computerCounterHTML: HTMLElement = document.getElementById("counterComputer");
+    let playerCounterHTML: HTMLElement = document.getElementById("counterPlayer");
+
+    let computerPoints: number = 0;
+    let playerPoints: number = 0;
+
+    function counter(): void {
+        if (computerMove == true) {
+            computerPoints++;
+            computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total";
+        } else {
+            playerPoints++;
+            playerCounterHTML.innerHTML = "Player: " + playerPoints + " in total";
+        }
+    }
+
     //Computer
     function computer(): void {
-        let randomNumber: number [] = [];
+        let randomNumber: number[] = [];
         randomNumber.push(Math.floor(Math.random() * 8)); //-> *8 = random Zahlen von 0-7 (Easy)
         randomNumber.push(Math.floor(Math.random() * 8));
         if (randomNumber[0] != randomNumber[1]) {
@@ -496,5 +522,16 @@ namespace MemoryGame {
             computer();
         }
     }
+
+    function winAlert(): void {
+        if (winCounter == 4 && computerPoints > playerPoints) {
+            window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
+        } else if (winCounter == 4 &&  computerPoints < playerPoints) {
+            window.alert("Der Player hat mit " + playerPoints + " Punkten gewonnen!");
+        } else if (winCounter == 4 &&  computerPoints == playerPoints) {
+            window.alert("Unentschieden!");
+        }
+    }
+
 
 }
