@@ -434,17 +434,17 @@ namespace MemoryGame {
             firstMove = false; //Boolean für den ersten Zug wird auf false gestellt
         } else {
             stopMoves = false;
-            setTimeout(function (): void {
-                secondCardChoice = levelCards[index].compare; //
-                secondIndex = index;
-                if (firstCardChoice == secondCardChoice) {
-                    levelCards[firstIndex].found = true;
+            setTimeout(function (): void { //Damit sich die Karten nach einer bestimmten Zeit wieder umdrehen
+                secondCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
+                secondIndex = index; //Der Index wird in einer Variable gespeichert
+                if (firstCardChoice == secondCardChoice) { //Variablen vergleichen -> wenn die Variablen gleich sind, dann...
+                    levelCards[firstIndex].found = true; //Gefunden Boolean von beiden Objekten auf true setzen
                     levelCards[secondIndex].found = true;
 
-                    let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex);
-                    container1.classList.add("hidden");
+                    let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable sleketieren
+                    container1.classList.add("hidden"); //dem container die Klasse hidden geben (in CSS definiert), damit Karte verschwindet
 
-                    let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex);
+                    let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex); //Container von zweiter Karte in Variable sleketieren
                     container2.classList.add("hidden");
 
                     //Score vom jeweiligen Spieler hochzählen
@@ -454,12 +454,10 @@ namespace MemoryGame {
                     counter();
                     winCounter++;
                     
-                    
                     if (computerMove == true) {
                         computer();
-                    } //else {
-                    //     computerMove = true;
-                    // }
+                    } 
+
                     winAlert();
                 } else {
 
@@ -527,7 +525,7 @@ namespace MemoryGame {
         if (winCounter == 4 && computerPoints > playerPoints) {
             window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
         } else if (winCounter == 4 &&  computerPoints < playerPoints) {
-            window.alert("Der Player hat mit " + playerPoints + " Punkten gewonnen!");
+            window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
         } else if (winCounter == 4 &&  computerPoints == playerPoints) {
             window.alert("Unentschieden!");
         }

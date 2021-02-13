@@ -413,14 +413,14 @@ var MemoryGame;
         else {
             stopMoves = false;
             setTimeout(function () {
-                secondCardChoice = levelCards[index].compare; //
-                secondIndex = index;
-                if (firstCardChoice == secondCardChoice) {
-                    levelCards[firstIndex].found = true;
+                secondCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
+                secondIndex = index; //Der Index wird in einer Variable gespeichert
+                if (firstCardChoice == secondCardChoice) { //Variablen vergleichen -> wenn die Variablen gleich sind, dann...
+                    levelCards[firstIndex].found = true; //Gefunden Boolean von beiden Objekten auf true setzen
                     levelCards[secondIndex].found = true;
-                    var container1 = document.querySelector(".cardDiv" + firstIndex);
-                    container1.classList.add("hidden");
-                    var container2 = document.querySelector(".cardDiv" + secondIndex);
+                    var container1 = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable sleketieren
+                    container1.classList.add("hidden"); //dem container die Klasse hidden geben (in CSS definiert), damit Karte verschwindet
+                    var container2 = document.querySelector(".cardDiv" + secondIndex); //Container von zweiter Karte in Variable sleketieren
                     container2.classList.add("hidden");
                     //Score vom jeweiligen Spieler hochzählen
                     console.log("Richtig");
@@ -430,9 +430,7 @@ var MemoryGame;
                     winCounter++;
                     if (computerMove == true) {
                         computer();
-                    } //else {
-                    //     computerMove = true;
-                    // }
+                    }
                     winAlert();
                 }
                 else {
@@ -496,7 +494,7 @@ var MemoryGame;
             window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
         }
         else if (winCounter == 4 && computerPoints < playerPoints) {
-            window.alert("Der Player hat mit " + playerPoints + " Punkten gewonnen!");
+            window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
         }
         else if (winCounter == 4 && computerPoints == playerPoints) {
             window.alert("Unentschieden!");
