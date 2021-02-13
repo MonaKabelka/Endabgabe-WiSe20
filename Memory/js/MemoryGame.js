@@ -397,15 +397,15 @@ var MemoryGame;
     var secondCardChoice; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
     var firstIndex; //Variable um Index beim ersten Klick zu speichern
     var secondIndex; //Variable um Index beim zweiten Klick zu speichern
+    //Funktion um Karten zu vergleichen
     function compareCards(index) {
-        if (firstMove == true) { //if 
-            firstCardChoice = levelCards[index].compare;
-            firstIndex = index;
-            console.log(firstCardChoice);
-            firstMove = false;
+        if (firstMove == true) { //wenn boolean true ist, dann ist es der erste von zwei Zügen
+            firstCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
+            firstIndex = index; //Der Index wird in einer Variable gespeichert
+            firstMove = false; //Boolean für den ersten Zug wird auf false gestellt
         }
         else {
-            secondCardChoice = levelCards[index].compare;
+            secondCardChoice = levelCards[index].compare; //
             secondIndex = index;
             if (firstCardChoice == secondCardChoice) {
                 levelCards[firstIndex].found = true;
