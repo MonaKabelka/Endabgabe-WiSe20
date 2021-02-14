@@ -12,7 +12,7 @@ namespace MemoryGame {
     let easyCards: CardsInterface[] = [
         // Kartenpaar 1
         {
-            pic: "material/EasyCards/1.png", //Jeweiliges Hintergrundbild
+            pic: "material/EasyCards/1.png", //Jeweiliges Hintergrundbild mit entsprechenden Merkmalen
             compare: 1, //Vergleichsindikator für die zwei zusammengehörenden Kartenpaare
             found: false //Boolean für gefunden/noch nicht gefunden
         },
@@ -390,9 +390,9 @@ namespace MemoryGame {
     }
 
     //Variable für das div im HTML, in welches die Karten gepusht werden sollen
-    let container: HTMLElement = document.getElementById("cardContainer");
-    let stopMoves: boolean = true;
-    let winCounter: number = 0;
+    let container: HTMLElement = document.getElementById("cardContainer"); 
+    let stopMoves: boolean = true; //Boolean für das Begrenzen der Züge
+    let winCounter: number = 0; //Variable für das Zählen der Punkte
 
     function createCard(grid: string): void {
         //Container leeren
@@ -405,7 +405,7 @@ namespace MemoryGame {
             newCard.classList.add("cardDiv" + index); //Klasse und Indexzahl als Klasse hinzufügen
             newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>"; //Hintergrundbild hinzufügen (Rückseite)
             newCard.addEventListener("click", function (): void {
-                if (stopMoves == true) {
+                if (stopMoves == true) { //Boolean ist nur bei ersten zwei Zügen true, danach false => kein aufrufen der Funktion mehr
                     flipCard(index); //Eventlistener: beim klicken Karte umdrehen
                  }
             });
@@ -415,9 +415,8 @@ namespace MemoryGame {
 
     //Karte umdrehen Funktion
     function flipCard(index: number): void { //Index aus levelCards als Argument übergeben (Aufruf in createCard Funktion)
-        console.log("flip");
         let container: HTMLElement = document.querySelector(".cardDiv" + index); //richtigen Container selektieren
-        container.innerHTML = "<img src=" + levelCards[index].pic + ">"; //via innerHTMl das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
+        container.innerHTML = "<img src=" + levelCards[index].pic + ">"; //via innerHTML das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
         compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
     }
 
@@ -428,12 +427,12 @@ namespace MemoryGame {
 
     //Funktion um Karten zu vergleichen
     function compareCards(index: number): void {
-        if (firstMove == true) { //wenn boolean true ist, dann ist es der erste von zwei Zügen
+        if (firstMove == true) { //wenn Boolean true ist, dann ist es der erste von zwei Zügen
             firstCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
             firstIndex = index; //Der Index wird in einer Variable gespeichert
             firstMove = false; //Boolean für den ersten Zug wird auf false gestellt
         } else {
-            stopMoves = false;
+            stopMoves = false; //Nach dem zweiten Zug Boolean auf false setzten, um weiteres klicken zu verhindern
             setTimeout(function (): void { //Damit sich die Karten nach einer bestimmten Zeit wieder umdrehen
                 secondCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
                 secondIndex = index; //Der Index wird in einer Variable gespeichert
@@ -441,42 +440,38 @@ namespace MemoryGame {
                     levelCards[firstIndex].found = true; //Gefunden Boolean von beiden Objekten auf true setzen
                     levelCards[secondIndex].found = true;
 
-                    let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable sleketieren
-                    container1.classList.add("hidden"); //dem container die Klasse hidden geben (in CSS definiert), damit Karte verschwindet
+                    let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable selektieren
+                    container1.classList.add("hidden"); //dem Container die Klasse hidden geben (in CSS definiert), damit Karte verschwindet
 
                     let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex); //Container von zweiter Karte in Variable sleketieren
-                    container2.classList.add("hidden");
+                    container2.classList.add("hidden"); 
 
-                    //Score vom jeweiligen Spieler hochzählen
-                    console.log("Richtig");
-                    firstMove = true;
-                    stopMoves = true;
-                    counter();
-                    winCounter++;
+                    firstMove = true; //Boolean um ersten Zug zu erlauben auf true stellen
+                    stopMoves = true; //Boolean nach dem zweiten Zug wieder auf true setzten, um neue Züge zu ermöglichen
+                    counter(); //Funktion zum Zählen aufrufen
+                    winCounter++; //Variable als Punkte hochzählen
                     
-                    if (computerMove == true) {
-                        computer();
-                    } 
+                    if (computerMove == true) { //Wenn der Boolean für den Computerzug true ist, dann...
+                        computer(); //Computer Funktion aufrufen
+                    }  //ComputerMove Boolean nicht auf false setzen, da der Computer noch einen Zug machen darf, nachdem ein Kartenpaar gefunden wurde
+                    winAlert(); //Gewinnfunktion aufrufen
 
-                    winAlert();
-                } else {
+                } else { //Wenn die Variablen nicht gleich sind
 
-                    let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex);
-                    container1.innerHTML = "<img src=material/BackCard/Memory-Back.png >";
+                    let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable selektieren
+                    container1.innerHTML = "<img src=material/BackCard/Memory-Back.png >"; //Hintergrund wieder auf Rückseite ändern, zum Karte umdrehen
 
-                    let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex);
-                    container2.innerHTML = "<img src=material/BackCard/Memory-Back.png >";
+                    let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex); //Container von zweiter Karte in Variable selektieren
+                    container2.innerHTML = "<img src=material/BackCard/Memory-Back.png >"; //Hintergrund wieder auf Rückseite ändern, zum Karte umdrehen
 
-
-                    firstMove = true;
-                    console.log("Falsch");
-                    stopMoves = true;
+                    firstMove = true; //Boolean um ersten Zug zu erlauben auf true stellen
+                    stopMoves = true; //Boolean nach dem zweiten Zug wieder auf true setzten, um neue Züge zu ermöglichen
                     // Karten wieder umdrehen
-                    if (computerMove == true) {
-                        computerMove = false;
-                    } else {
-                        computerMove = true;
-                        computer();
+                    if (computerMove == true) { //Wenn der Computer am Zug ist, dann...
+                        computerMove = false; //Boolean auf false setzen -> Computer nicht mehr am Zug
+                    } else { //Wenn Computer nicht am Zug ist, dann...
+                        computerMove = true; //Boolean auf true setzen => Computer hat den nächsten Zug
+                        computer(); //Computer Funktion aufrufen -> Computer macht seinen Zug
                     }
                 }
             },         3000);
@@ -488,43 +483,44 @@ namespace MemoryGame {
         levelCards.sort(() => 0.5 - Math.random());
     }
 
-    let computerCounterHTML: HTMLElement = document.getElementById("counterComputer");
+    let computerCounterHTML: HTMLElement = document.getElementById("counterComputer"); //Variable für <p> Tag in der HTML
     let playerCounterHTML: HTMLElement = document.getElementById("counterPlayer");
 
-    let computerPoints: number = 0;
-    let playerPoints: number = 0;
+    let computerPoints: number = 0; //Punkte für den Computer
+    let playerPoints: number = 0; //Punkte für den Spieler
 
+    //Zählen Funktion
     function counter(): void {
-        if (computerMove == true) {
-            computerPoints++;
-            computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total";
-        } else {
-            playerPoints++;
-            playerCounterHTML.innerHTML = "Player: " + playerPoints + " in total";
+        if (computerMove == true) { //Wenn der Boolean computerMove true ist, ist der Computer am Zug
+            computerPoints++; //=> Variable des Computers +1
+            computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total"; //Punkte inner HTML ausgeben
+        } else { //wenn Computer nicht dran ist (compterMove Boolean false), dann ist der Spieler am Zug
+            playerPoints++; //=> Variable des Spielers +1
+            playerCounterHTML.innerHTML = "Player: " + playerPoints + " in total"; //Punkte inner HTML ausgeben
         }
     }
 
     //Computer
     function computer(): void {
-        let randomNumber: number[] = [];
-        randomNumber.push(Math.floor(Math.random() * 8)); //-> *8 = random Zahlen von 0-7 (Easy)
-        randomNumber.push(Math.floor(Math.random() * 8));
-        if (randomNumber[0] != randomNumber[1]) {
-            if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) {
-                flipCard(randomNumber[0]);
+        let randomNumber: number[] = []; //Leeres Array, in welches  random Zahlen gepusht werden
+        randomNumber.push(Math.floor(Math.random() * 8)); //-> *8 = random Zahlen von 0-7 (Easy) ins Array gepusht
+        randomNumber.push(Math.floor(Math.random() * 8)); 
+        if (randomNumber[0] != randomNumber[1]) { //Wenn die Nummern ungleich sind...
+            if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) { //...Wenn die "simulierten" Index im Array levelCards noch nicht gefunden wurden (Boolean found false)
+                flipCard(randomNumber[0]); //Simulierter Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
                 flipCard(randomNumber[1]);
-            } else {
-                computer();
+            } else { //Wenn der Boolean found true ist, wurden Karten schon gefunden
+                computer(); //=> nochmal Computer, bis zwei Karten gezogen wurden, die noch nicht gefunden wurden
             }
-        } else {
-            computer();
+        } else { //Wenn die Nummern gleich sind 
+            computer(); //=> nochmal Computer, bis die Nummern ungleich sind (damit eine Karte nicht doppelt gezogen werden kann)
         }
     }
 
     function winAlert(): void {
         if (winCounter == 4 && computerPoints > playerPoints) {
             window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
-        } else if (winCounter == 4 &&  computerPoints < playerPoints) {
+        } else if (winCounter == 4 && computerPoints < playerPoints) {
             window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
         } else if (winCounter == 4 &&  computerPoints == playerPoints) {
             window.alert("Unentschieden!");
