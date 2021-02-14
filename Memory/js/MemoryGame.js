@@ -322,11 +322,9 @@ var MemoryGame;
     //Wrapper für die Buttons als Variable
     var btnWrapper = document.getElementById("buttonsContainer");
     //Variable für Resfresh Button in HTML
-    var refreshBtn = document.querySelector("#fa-redo-alt");
-    //Boolean, für den ersten/zweiten Zug
-    var firstMove = true;
-    var humanMove = false;
-    var computerMove = true;
+    var firstMove = true; //Boolean, für den ersten/zweiten Zug
+    var computerMove = true; //Boolean für den Computer Zug
+    var restartBtn = document.querySelector("#fa-redo-alt"); //Variable für den Restart Button
     //Buttons erstellen in Wrapper
     var btnEasy = document.createElement("button");
     btnEasy.innerHTML = "Easy";
@@ -409,7 +407,7 @@ var MemoryGame;
             firstIndex = index; //Der Index wird in einer Variable gespeichert
             firstMove = false; //Boolean für den ersten Zug wird auf false gestellt
         }
-        else {
+        else { //zweiter Zug
             stopMoves = false; //Nach dem zweiten Zug Boolean auf false setzten, um weiteres klicken zu verhindern
             setTimeout(function () {
                 secondCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
@@ -446,7 +444,7 @@ var MemoryGame;
                         computer(); //Computer Funktion aufrufen -> Computer macht seinen Zug
                     }
                 }
-            }, 3000);
+            }, 2500);
         }
     }
     //Karten im levelCards Array mischen
@@ -475,8 +473,12 @@ var MemoryGame;
         randomNumber.push(Math.floor(Math.random() * 8));
         if (randomNumber[0] != randomNumber[1]) { //Wenn die Nummern ungleich sind...
             if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) { //...Wenn die "simulierten" Index im Array levelCards noch nicht gefunden wurden (Boolean found false)
-                flipCard(randomNumber[0]); //Simulierter Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
-                flipCard(randomNumber[1]);
+                setTimeout(function () {
+                    flipCard(randomNumber[0]); //Simulierter Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
+                }, 200);
+                setTimeout(function () {
+                    flipCard(randomNumber[1]);
+                }, 350);
             }
             else { //Wenn der Boolean found true ist, wurden Karten schon gefunden
                 computer(); //=> nochmal Computer, bis zwei Karten gezogen wurden, die noch nicht gefunden wurden
@@ -496,6 +498,9 @@ var MemoryGame;
         else if (winCounter == 4 && computerPoints == playerPoints) {
             window.alert("Unentschieden!");
         }
+    }
+    function restart() {
+        levelCards = [];
     }
 })(MemoryGame || (MemoryGame = {}));
 //# sourceMappingURL=MemoryGame.js.map

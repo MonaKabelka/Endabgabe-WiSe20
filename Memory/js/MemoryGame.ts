@@ -334,12 +334,11 @@ namespace MemoryGame {
     //Wrapper für die Buttons als Variable
     const btnWrapper: HTMLElement = document.getElementById("buttonsContainer");
     //Variable für Resfresh Button in HTML
-    const refreshBtn: HTMLElement = document.querySelector("#fa-redo-alt");
-    //Boolean, für den ersten/zweiten Zug
-    let firstMove: boolean = true;
-    let humanMove: boolean = false;
-    let computerMove: boolean = true;
+    
+    let firstMove: boolean = true; //Boolean, für den ersten/zweiten Zug
+    let computerMove: boolean = true; //Boolean für den Computer Zug
 
+    let restartBtn: HTMLElement = document.querySelector("#fa-redo-alt"); //Variable für den Restart Button
 
     //Buttons erstellen in Wrapper
     let btnEasy: HTMLButtonElement = document.createElement("button");
@@ -431,7 +430,7 @@ namespace MemoryGame {
             firstCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
             firstIndex = index; //Der Index wird in einer Variable gespeichert
             firstMove = false; //Boolean für den ersten Zug wird auf false gestellt
-        } else {
+        } else { //zweiter Zug
             stopMoves = false; //Nach dem zweiten Zug Boolean auf false setzten, um weiteres klicken zu verhindern
             setTimeout(function (): void { //Damit sich die Karten nach einer bestimmten Zeit wieder umdrehen
                 secondCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
@@ -474,7 +473,7 @@ namespace MemoryGame {
                         computer(); //Computer Funktion aufrufen -> Computer macht seinen Zug
                     }
                 }
-            },         3000);
+            },         2500);
         }
     }
 
@@ -502,19 +501,23 @@ namespace MemoryGame {
 
     //Computer
     function computer(): void {
-        let randomNumber: number[] = []; //Leeres Array, in welches  random Zahlen gepusht werden
-        randomNumber.push(Math.floor(Math.random() * 8)); //-> *8 = random Zahlen von 0-7 (Easy) ins Array gepusht
-        randomNumber.push(Math.floor(Math.random() * 8)); 
-        if (randomNumber[0] != randomNumber[1]) { //Wenn die Nummern ungleich sind...
-            if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) { //...Wenn die "simulierten" Index im Array levelCards noch nicht gefunden wurden (Boolean found false)
-                flipCard(randomNumber[0]); //Simulierter Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
+            let randomNumber: number[] = []; //Leeres Array, in welches  random Zahlen gepusht werden
+            randomNumber.push(Math.floor(Math.random() * 8)); //-> *8 = random Zahlen von 0-7 (Easy) ins Array gepusht
+            randomNumber.push(Math.floor(Math.random() * 8)); 
+            if (randomNumber[0] != randomNumber[1]) { //Wenn die Nummern ungleich sind...
+                if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) { //...Wenn die "simulierten" Index im Array levelCards noch nicht gefunden wurden (Boolean found false)
+                setTimeout(function (): void { //Damit die erste Karte etwas verzögert aufgedeckt wird
+                        flipCard(randomNumber[0]); //Simulierter Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
+                },         200);
+                setTimeout(function (): void { //Damit die zweite Karte noch verzögerter aufgedeckt wird
                 flipCard(randomNumber[1]);
-            } else { //Wenn der Boolean found true ist, wurden Karten schon gefunden
-                computer(); //=> nochmal Computer, bis zwei Karten gezogen wurden, die noch nicht gefunden wurden
+                },         350);
+                } else { //Wenn der Boolean found true ist, wurden Karten schon gefunden
+                    computer(); //=> nochmal Computer, bis zwei Karten gezogen wurden, die noch nicht gefunden wurden
+                }
+            } else { //Wenn die Nummern gleich sind 
+                computer(); //=> nochmal Computer, bis die Nummern ungleich sind (damit eine Karte nicht doppelt gezogen werden kann)
             }
-        } else { //Wenn die Nummern gleich sind 
-            computer(); //=> nochmal Computer, bis die Nummern ungleich sind (damit eine Karte nicht doppelt gezogen werden kann)
-        }
     }
 
     function winAlert(): void { 
@@ -527,5 +530,8 @@ namespace MemoryGame {
         }
     } 
 
+    function restart(): void {
+        levelCards = [];
+    }
 
 }
