@@ -526,21 +526,29 @@ var MemoryGame;
         }
     }
     function winAlert() {
+        // setTimeout(function (): void {
         if (winCounter == maxCardsPair && computerPoints > playerPoints) {
-            window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
             computerLock = false;
-            restart();
+            setTimeout(function () {
+                window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
+                restart();
+            }, 500);
         }
         else if (winCounter == maxCardsPair && computerPoints < playerPoints) {
-            window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
             computerLock = false;
-            restart();
+            setTimeout(function () {
+                window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
+                restart();
+            }, 500);
         }
         else if (winCounter == maxCardsPair && computerPoints == playerPoints) {
-            window.alert("Unentschieden!");
             computerLock = false;
-            restart();
+            setTimeout(function () {
+                window.alert("Unentschieden!");
+                restart();
+            }, 500);
         }
+        // },             500);
     }
     function restart() {
         levelCards = [];

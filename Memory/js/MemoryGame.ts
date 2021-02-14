@@ -562,19 +562,27 @@ namespace MemoryGame {
     }
 
     function winAlert(): void { 
+        // setTimeout(function (): void {
         if (winCounter == maxCardsPair && computerPoints > playerPoints) { 
+            computerLock = false;
+            setTimeout(function (): void {
             window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
-            computerLock = false;
             restart();
+        },             500);
         } else if (winCounter == maxCardsPair && computerPoints < playerPoints) { 
+            computerLock = false;
+            setTimeout(function (): void {
             window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
-            computerLock = false;
             restart();
+        },             500);
         } else if (winCounter == maxCardsPair &&  computerPoints == playerPoints) { 
-            window.alert("Unentschieden!");
             computerLock = false;
+            setTimeout(function (): void {
+            window.alert("Unentschieden!");
             restart();
+        },             500);
         }
+    // },             500);
     } 
 
     function restart(): void {
