@@ -1,5 +1,5 @@
 html {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Trebuchet MS', sans-serif;
     color: white;
     background-image: url(bg2.jpg);
     background-size: cover;
@@ -8,8 +8,16 @@ html {
 }
 
 h1 {
+    color: rgb(255, 255, 255);
     text-transform: uppercase; 
     letter-spacing: 0.5em;
+    font-size: 40px;
+    text-shadow: 2px 2px #ffffff97;
+}
+
+.fa-redo-alt {
+    font-size: 30px;
+    margin:10px;
 }
 
 #wrapper {
@@ -41,6 +49,7 @@ img {
 
 button {
     color: white;
+    font-family: 'Trebuchet MS', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     border-radius: 10rem;
@@ -50,10 +59,3 @@ button {
     padding: 8px;;
     cursor: pointer;
 }
-
- /* #cardContainer >div {
-     padding: 30px;
-     width: 150px;
-     height: 150px;
- } */
-
