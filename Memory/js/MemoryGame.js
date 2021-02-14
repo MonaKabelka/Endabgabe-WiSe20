@@ -398,8 +398,8 @@ var MemoryGame;
         container.innerHTML = "<img src=" + levelCards[index].pic + ">"; //via innerHTML das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
         compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
     }
-    var firstCardChoice; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
-    var secondCardChoice; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    var firstCardChoice; //Variable, um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    var secondCardChoice; //Variable, um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
     var firstIndex; //Variable um Index beim ersten Klick zu speichern
     var secondIndex; //Variable um Index beim zweiten Klick zu speichern
     //Funktion um Karten zu vergleichen
@@ -425,10 +425,10 @@ var MemoryGame;
                     stopMoves = true; //Boolean nach dem zweiten Zug wieder auf true setzten, um neue Züge zu ermöglichen
                     counter(); //Funktion zum Zählen aufrufen
                     winCounter++; //Variable als Punkte hochzählen
+                    winAlert(); //Gewinnfunktion aufrufen
                     if (computerMove == true) { //Wenn der Boolean für den Computerzug true ist, dann...
                         computer(); //Computer Funktion aufrufen
                     } //ComputerMove Boolean nicht auf false setzen, da der Computer noch einen Zug machen darf, nachdem ein Kartenpaar gefunden wurde
-                    winAlert(); //Gewinnfunktion aufrufen
                 }
                 else { //Wenn die Variablen nicht gleich sind
                     var container1 = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable selektieren

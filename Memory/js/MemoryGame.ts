@@ -420,8 +420,8 @@ namespace MemoryGame {
         compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
     }
 
-    let firstCardChoice: number; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
-    let secondCardChoice: number; //Variable um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    let firstCardChoice: number; //Variable, um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    let secondCardChoice: number; //Variable, um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
     let firstIndex: number; //Variable um Index beim ersten Klick zu speichern
     let secondIndex: number; //Variable um Index beim zweiten Klick zu speichern
 
@@ -450,11 +450,11 @@ namespace MemoryGame {
                     stopMoves = true; //Boolean nach dem zweiten Zug wieder auf true setzten, um neue Züge zu ermöglichen
                     counter(); //Funktion zum Zählen aufrufen
                     winCounter++; //Variable als Punkte hochzählen
+                    winAlert(); //Gewinnfunktion aufrufen
                     
                     if (computerMove == true) { //Wenn der Boolean für den Computerzug true ist, dann...
                         computer(); //Computer Funktion aufrufen
                     }  //ComputerMove Boolean nicht auf false setzen, da der Computer noch einen Zug machen darf, nachdem ein Kartenpaar gefunden wurde
-                    winAlert(); //Gewinnfunktion aufrufen
 
                 } else { //Wenn die Variablen nicht gleich sind
 
@@ -517,15 +517,15 @@ namespace MemoryGame {
         }
     }
 
-    function winAlert(): void {
-        if (winCounter == 4 && computerPoints > playerPoints) {
+    function winAlert(): void { 
+        if (winCounter == 4 && computerPoints > playerPoints) { 
             window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
-        } else if (winCounter == 4 && computerPoints < playerPoints) {
+        } else if (winCounter == 4 && computerPoints < playerPoints) { 
             window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
-        } else if (winCounter == 4 &&  computerPoints == playerPoints) {
+        } else if (winCounter == 4 &&  computerPoints == playerPoints) { 
             window.alert("Unentschieden!");
         }
-    }
+    } 
 
 
 }
