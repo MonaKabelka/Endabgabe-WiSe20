@@ -325,6 +325,9 @@ var MemoryGame;
     var firstMove = true; //Boolean, für den ersten/zweiten Zug
     var computerMove = true; //Boolean für den Computer Zug
     var restartBtn = document.querySelector(".fa-redo-alt"); //Variable für den Restart Button
+    var maxCards; //Variable für maximale Anzahl an Karten (entsprechend nach Schwirigkeitsgrad) für Computer
+    var maxCardsPair; //Variable für maximale Anzahl an Kartenpaaren (entsprechend nach Schwirigkeitsgrad) für winAlert
+    var computerLock = true; //Boolean nach Ende des Spiels auf false setzen, damit Computer blockiert ist
     //Buttons erstellen in Wrapper
     var btnEasy = document.createElement("button");
     btnEasy.innerHTML = "Easy";
@@ -342,8 +345,11 @@ var MemoryGame;
         levelCards = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
         mixCards(); //Funktionsaufruf für das Mischen des Indexes
-        computer(); // Funktionsaufruf für den >Spielzug des Computers
         showRestartBtn();
+        maxCards = 8;
+        maxCardsPair = 4;
+        computerLock = true;
+        computer(); // Funktionsaufruf für den >Spielzug des Computers
     });
     btnMedium.addEventListener("click", function () {
         console.log("Difficulty: Medium");
@@ -351,8 +357,11 @@ var MemoryGame;
         levelCards = mediumCards; //Alle Karten aus dem mediumCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerEasyMedium");
         mixCards();
-        computer();
         showRestartBtn();
+        maxCards = 16;
+        maxCardsPair = 8;
+        computerLock = true;
+        computer();
     });
     btnHard.addEventListener("click", function () {
         console.log("Difficulty: Hard");
@@ -360,8 +369,11 @@ var MemoryGame;
         levelCards = hardCards; //Alle Karten aus dem hardCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerHard");
         mixCards();
-        computer();
         showRestartBtn();
+        maxCards = 32;
+        maxCardsPair = 16;
+        computerLock = true;
+        computer();
     });
     //Funktion zum verstecken von den Buttons mit CSS Klasse
     function hideBtns() {
@@ -404,11 +416,18 @@ var MemoryGame;
             _loop_1(index);
         }
     }
+    var indexSaving = [];
     //Karte umdrehen Funktion
     function flipCard(index) {
         var container = document.querySelector(".cardDiv" + index); //richtigen Container selektieren
         container.innerHTML = "<img src=" + levelCards[index].pic + ">"; //via innerHTML das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
-        compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
+        indexSaving.push(index); //beim Klicken wird Index gespeichert, um zu verhindern, dass die gleiche Karte zweimal geklickt werden kann
+        if (indexSaving[0] != indexSaving[1]) { //nur wenn die karten ungleich sind, werden sie verglichen
+            compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
+        }
+        else {
+            indexSaving.pop(); //Wenn sie nicht gleich sind wird die gleiche Stelle gelöscht und nichts verglichen
+        }
     }
     var firstCardChoice; //Variable, um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
     var secondCardChoice; //Variable, um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
@@ -438,6 +457,7 @@ var MemoryGame;
                     counter(); //Funktion zum Zählen aufrufen
                     winCounter++; //Variable als Punkte hochzählen
                     winAlert(); //Gewinnfunktion aufrufen
+                    indexSaving = [];
                     if (computerMove == true) { //Wenn der Boolean für den Computerzug true ist, dann...
                         computer(); //Computer Funktion aufrufen
                     } //ComputerMove Boolean nicht auf false setzen, da der Computer noch einen Zug machen darf, nachdem ein Kartenpaar gefunden wurde
@@ -450,6 +470,7 @@ var MemoryGame;
                     firstMove = true; //Boolean um ersten Zug zu erlauben auf true stellen
                     stopMoves = true; //Boolean nach dem zweiten Zug wieder auf true setzten, um neue Züge zu ermöglichen
                     // Karten wieder umdrehen
+                    indexSaving = [];
                     if (computerMove == true) { //Wenn der Computer am Zug ist, dann...
                         computerMove = false; //Boolean auf false setzen -> Computer nicht mehr am Zug
                     }
@@ -482,52 +503,66 @@ var MemoryGame;
     }
     //Computer
     function computer() {
-        var randomNumber = []; //Leeres Array, in welches  random Zahlen gepusht werden
-        randomNumber.push(Math.floor(Math.random() * 8)); //-> *8 = random Zahlen von 0-7 (Easy) ins Array gepusht
-        randomNumber.push(Math.floor(Math.random() * 8));
-        if (randomNumber[0] != randomNumber[1]) { //Wenn die Nummern ungleich sind...
-            if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) { //...Wenn die "simulierten" Index im Array levelCards noch nicht gefunden wurden (Boolean found false)
-                setTimeout(function () {
-                    flipCard(randomNumber[0]); //Simulierter Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
-                }, 200);
-                setTimeout(function () {
-                    flipCard(randomNumber[1]);
-                }, 350);
+        if (computerLock == true) {
+            var randomNumber_1 = []; //Leeres Array, in welches  random Zahlen gepusht werden
+            randomNumber_1.push(Math.floor(Math.random() * maxCards)); //-> *8 = random Zahlen von 0-7 (Easy) ins Array gepusht
+            randomNumber_1.push(Math.floor(Math.random() * maxCards));
+            if (randomNumber_1[0] != randomNumber_1[1]) { //Wenn die Nummern ungleich sind...
+                if (levelCards[randomNumber_1[0]].found == false && levelCards[randomNumber_1[1]].found == false) { //...Wenn die "simulierten" Index im Array levelCards noch nicht gefunden wurden (Boolean found false)
+                    setTimeout(function () {
+                        flipCard(randomNumber_1[0]); //Simulierter Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
+                    }, 200);
+                    setTimeout(function () {
+                        flipCard(randomNumber_1[1]);
+                    }, 350);
+                }
+                else { //Wenn der Boolean found true ist, wurden Karten schon gefunden
+                    computer(); //=> nochmal Computer, bis zwei Karten gezogen wurden, die noch nicht gefunden wurden
+                }
             }
-            else { //Wenn der Boolean found true ist, wurden Karten schon gefunden
-                computer(); //=> nochmal Computer, bis zwei Karten gezogen wurden, die noch nicht gefunden wurden
+            else { //Wenn die Nummern gleich sind 
+                computer(); //=> nochmal Computer, bis die Nummern ungleich sind (damit eine Karte nicht doppelt gezogen werden kann)
             }
-        }
-        else { //Wenn die Nummern gleich sind 
-            computer(); //=> nochmal Computer, bis die Nummern ungleich sind (damit eine Karte nicht doppelt gezogen werden kann)
         }
     }
     function winAlert() {
-        if (winCounter == 4 && computerPoints > playerPoints) {
+        if (winCounter == maxCardsPair && computerPoints > playerPoints) {
             window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
+            computerLock = false;
+            restart();
         }
-        else if (winCounter == 4 && computerPoints < playerPoints) {
+        else if (winCounter == maxCardsPair && computerPoints < playerPoints) {
             window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
+            computerLock = false;
+            restart();
         }
-        else if (winCounter == 4 && computerPoints == playerPoints) {
+        else if (winCounter == maxCardsPair && computerPoints == playerPoints) {
             window.alert("Unentschieden!");
+            computerLock = false;
+            restart();
         }
     }
     function restart() {
         levelCards = [];
+        firstMove = true;
         computerMove = true;
         showBtns();
         hideRestartBtn();
         container.innerHTML = "";
+        computerPoints = 0;
+        playerPoints = 0;
+        computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total";
+        playerCounterHTML.innerHTML = "Player: " + playerPoints + " in total";
         if (container.classList.contains("containerHard")) {
             container.classList.remove("containerHard");
         }
         else if (container.classList.contains("containerEasyMedium")) {
             container.classList.remove("containerEasyMedium");
         }
-        // CONSOLENAUSGABE STIMMT NICHT GANZ? Computer spielt verrückt
+        // CONSOLENAUSGABE STIMMT NICHT GANZ? Computer spielt nach neustart doppelt wenn man zu schnell drückt??
     }
     restartBtn.addEventListener("click", function () {
+        computerLock = false;
         restart();
     });
 })(MemoryGame || (MemoryGame = {}));
