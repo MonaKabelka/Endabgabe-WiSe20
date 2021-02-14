@@ -338,7 +338,7 @@ namespace MemoryGame {
     let firstMove: boolean = true; //Boolean, für den ersten/zweiten Zug
     let computerMove: boolean = true; //Boolean für den Computer Zug
 
-    let restartBtn: HTMLElement = document.querySelector("#fa-redo-alt"); //Variable für den Restart Button
+    let restartBtn: HTMLElement = document.querySelector(".fa-redo-alt"); //Variable für den Restart Button
 
     //Buttons erstellen in Wrapper
     let btnEasy: HTMLButtonElement = document.createElement("button");
@@ -361,6 +361,7 @@ namespace MemoryGame {
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
         mixCards(); //Funktionsaufruf für das Mischen des Indexes
         computer(); // Funktionsaufruf für den >Spielzug des Computers
+        showRestartBtn();
     });
 
     btnMedium.addEventListener("click", function (): void {
@@ -370,6 +371,7 @@ namespace MemoryGame {
         createCard("containerEasyMedium");
         mixCards();
         computer();
+        showRestartBtn();
     });
 
     btnHard.addEventListener("click", function (): void {
@@ -379,6 +381,7 @@ namespace MemoryGame {
         createCard("containerHard");
         mixCards();
         computer();
+        showRestartBtn();
     });
 
     //Funktion zum verstecken von den Buttons mit CSS Klasse
@@ -386,6 +389,20 @@ namespace MemoryGame {
         btnEasy.classList.add("hidden");
         btnMedium.classList.add("hidden");
         btnHard.classList.add("hidden");
+    }
+
+    function showBtns(): void {
+        btnEasy.classList.remove("hidden");
+        btnMedium.classList.remove("hidden");
+        btnHard.classList.remove("hidden");
+    }
+
+    function showRestartBtn(): void {
+        restartBtn.classList.remove("hidden");
+    }
+
+    function hideRestartBtn(): void {
+        restartBtn.classList.add("hidden");
     }
 
     //Variable für das div im HTML, in welches die Karten gepusht werden sollen
@@ -532,6 +549,20 @@ namespace MemoryGame {
 
     function restart(): void {
         levelCards = [];
+        computerMove = true;
+        showBtns();
+        hideRestartBtn();
+        container.innerHTML = "";
+        if (container.classList.contains("containerHard")) {
+            container.classList.remove("containerHard");
+        } else if (container.classList.contains("containerEasyMedium")) { 
+            container.classList.remove("containerEasyMedium");
+        }
+        // CONSOLENAUSGABE STIMMT NICHT GANZ? Computer spielt verrückt
     }
+
+    restartBtn.addEventListener("click", function (): void {
+        restart(); 
+    });
 
 }

@@ -324,7 +324,7 @@ var MemoryGame;
     //Variable für Resfresh Button in HTML
     var firstMove = true; //Boolean, für den ersten/zweiten Zug
     var computerMove = true; //Boolean für den Computer Zug
-    var restartBtn = document.querySelector("#fa-redo-alt"); //Variable für den Restart Button
+    var restartBtn = document.querySelector(".fa-redo-alt"); //Variable für den Restart Button
     //Buttons erstellen in Wrapper
     var btnEasy = document.createElement("button");
     btnEasy.innerHTML = "Easy";
@@ -343,6 +343,7 @@ var MemoryGame;
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
         mixCards(); //Funktionsaufruf für das Mischen des Indexes
         computer(); // Funktionsaufruf für den >Spielzug des Computers
+        showRestartBtn();
     });
     btnMedium.addEventListener("click", function () {
         console.log("Difficulty: Medium");
@@ -351,6 +352,7 @@ var MemoryGame;
         createCard("containerEasyMedium");
         mixCards();
         computer();
+        showRestartBtn();
     });
     btnHard.addEventListener("click", function () {
         console.log("Difficulty: Hard");
@@ -359,12 +361,24 @@ var MemoryGame;
         createCard("containerHard");
         mixCards();
         computer();
+        showRestartBtn();
     });
     //Funktion zum verstecken von den Buttons mit CSS Klasse
     function hideBtns() {
         btnEasy.classList.add("hidden");
         btnMedium.classList.add("hidden");
         btnHard.classList.add("hidden");
+    }
+    function showBtns() {
+        btnEasy.classList.remove("hidden");
+        btnMedium.classList.remove("hidden");
+        btnHard.classList.remove("hidden");
+    }
+    function showRestartBtn() {
+        restartBtn.classList.remove("hidden");
+    }
+    function hideRestartBtn() {
+        restartBtn.classList.add("hidden");
     }
     //Variable für das div im HTML, in welches die Karten gepusht werden sollen
     var container = document.getElementById("cardContainer");
@@ -501,6 +515,20 @@ var MemoryGame;
     }
     function restart() {
         levelCards = [];
+        computerMove = true;
+        showBtns();
+        hideRestartBtn();
+        container.innerHTML = "";
+        if (container.classList.contains("containerHard")) {
+            container.classList.remove("containerHard");
+        }
+        else if (container.classList.contains("containerEasyMedium")) {
+            container.classList.remove("containerEasyMedium");
+        }
+        // CONSOLENAUSGABE STIMMT NICHT GANZ? Computer spielt verrückt
     }
+    restartBtn.addEventListener("click", function () {
+        restart();
+    });
 })(MemoryGame || (MemoryGame = {}));
 //# sourceMappingURL=MemoryGame.js.map

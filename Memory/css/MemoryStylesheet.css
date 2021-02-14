@@ -21,7 +21,12 @@ h1 {
     cursor: pointer;
     position: absolute;
     top: 175px;
-    z-index: -1;
+    transition-duration: 0,4s;
+}
+
+.fa-redo-alt:hover {
+    cursor: pointer;
+    box-shadow: 0 8px 10px 0px rgba(50, 50, 50, 0.775)
 }
 
 #wrapper {
@@ -69,6 +74,7 @@ button {
     cursor: pointer;
     -webkit-transition-duration: 0.1s;
     transition-duration: 0.4s;
+    z-index: +1;
 }
 
 button:hover {
