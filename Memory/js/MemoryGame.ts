@@ -1,10 +1,10 @@
 namespace MemoryGame {
 
-    //Interface für Objekte von Karten mit Keys für: Hintergrundbild, Vergleichsindikator für das passende Kartenpaar, und ob die Karte gefunden wurde oder nicht
+    //Interface für Objekte von Karten
     interface CardsInterface {
-        pic: string;
-        compare: number;
-        found: boolean;
+        pic: string; //Key fürs Hintergrundbild
+        compare: number; //Zahl als Vergleichsindikator für passendes Kartenpaar
+        found: boolean; //Boolean, ob die Karte gefunden wurde oder nicht
     }
 
     //Array, das alle Spielkarten für den einfachen Schwierigkeitsgrad enthält (als Objekte)
@@ -327,22 +327,20 @@ namespace MemoryGame {
         }
     ];
 
-    //Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades gepusht werden
-    let levelCards: CardsInterface[] = [];
-
-    //Wrapper für die Buttons als Variable
-    const btnWrapper: HTMLElement = document.getElementById("buttonsContainer");
-    //Variable für Resfresh Button in HTML
+    //Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades kommen
+    let cardDeck: CardsInterface[] = [];
     
     let firstMove: boolean = true; //Boolean, für den ersten/zweiten Zug
     let computerMove: boolean = true; //Boolean für den Computer Zug
-    let restartBtn: HTMLElement = document.querySelector(".fa-redo-alt"); //Variable für den Restart Button
-    let maxCards: number; //Variable für maximale Anzahl an Karten (entsprechend nach Schwirigkeitsgrad) für Computer
+    const restartBtn: HTMLElement = document.querySelector(".fa-redo-alt"); //Variable für den Restart Button
+    let maxCards: number; //Variable für maximale Anzahl an Karten (entsprechend nach Schwierigkeitsgrad) für Computer
     let maxCardsPair: number; //Variable für maximale Anzahl an Kartenpaaren (entsprechend nach Schwirigkeitsgrad) für winAlert
     let computerLock: boolean = true; //Boolean nach Ende des Spiels auf false setzen, damit Computer blockiert ist
-    let indexSaving: number[] = [];
+    let indexSaveScndCLick: number[] = []; //Index von geglickten Karten in diesem Array speichern, um zu verhindern, dass eine Karte zweimal geklickt werden kann (siehe flipCard)
 
-    //Buttons erstellen in Wrapper
+    const btnWrapper: HTMLElement = document.getElementById("buttonsContainer"); //Wrapper für die Buttons als Variable
+    
+    //Buttons erstellen in Wrapper für Easy, Medium und Hard
     let btnEasy: HTMLButtonElement = document.createElement("button");
     btnEasy.innerHTML = "Easy";
     btnWrapper.appendChild(btnEasy);
@@ -359,25 +357,25 @@ namespace MemoryGame {
     btnEasy.addEventListener("click", function (): void {
         console.log("Difficulty: Easy");
         hideBtns(); //Die Buttons für die Schwierigkeitsgrade werden versteckt mit einer Klasse in CSS
-        levelCards = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren levelCards gespeichert
+        cardDeck = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren cardDeck gespeichert
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
-        mixCards(); //Funktionsaufruf für das Mischen des Indexes
+        mixCards(); //Funktionsaufruf für das Mischen des Indexes => Karten mischeln
         showRestartBtn(); //Restartbutton wird angezeigt
-        maxCards = 8; //Die höchste ANzahl an Karten für den Computer
+        maxCards = 8; //Die höchste Anzahl an Karten für die Computerfunktion (beschreibt die Auswahlmöglichkeiten des Bots)
         maxCardsPair = 4; //Die höchste Anzahl an Kartenpaaren für den Gewinn-Alert
-        computerLock = true; //Boolean um Computer zu sperren auf true setzen (damit Botfunktion ablaufen kann)
-        computer(); // Funktionsaufruf für den Spielzug des Computers
+        computerLock = true; //Boolean, um Computer zu sperren auf true setzen (damit Botfunktion überhaupt ablaufen kann)
+        computer(); //Funktionsaufruf für den Spielzug des Computers, damit dieser anfängt
     });
 
     btnMedium.addEventListener("click", function (): void {
         console.log("Difficulty: Medium");
         hideBtns();
-        levelCards = mediumCards; //Alle Karten aus dem mediumCards Array sind nun im zuvor leeren levelCards gespeichert
+        cardDeck = mediumCards; //Alle Karten aus dem mediumCards Array sind nun im zuvor leeren cardDeck gespeichert
         createCard("containerEasyMedium");
         mixCards();
         showRestartBtn();
-        maxCards = 16;
-        maxCardsPair = 8;
+        maxCards = 16; //Maximale Kartenazahl für mittleren Schwierigkeitsgrad (für Computer)
+        maxCardsPair = 8; //Die höchste Anzahl an Kartenpaaren für den Gewinn-Alert
         computerLock = true;
         computer();
     });
@@ -385,17 +383,17 @@ namespace MemoryGame {
     btnHard.addEventListener("click", function (): void {
         console.log("Difficulty: Hard");
         hideBtns();
-        levelCards = hardCards; //Alle Karten aus dem hardCards Array sind nun im zuvor leeren levelCards gespeichert
+        cardDeck = hardCards; //Alle Karten aus dem hardCards Array sind nun im zuvor leeren cardDeck gespeichert
         createCard("containerHard");
         mixCards();
         showRestartBtn();
-        maxCards = 32;
-        maxCardsPair = 16;
+        maxCards = 32; //Maximale Kartenazahl für schweren Schwierigkeitsgrad
+        maxCardsPair = 16; //Die höchste Anzahl an Kartenpaaren für den Gewinn-Alert
         computerLock = true;
         computer();
     });
 
-    //Funktion zum verstecken von den Buttons mit CSS Klasse
+    //Funktion zum verstecken von den Buttons (mit CSS Klasse hidden)
     function hideBtns(): void {
         btnEasy.classList.add("hidden");
         btnMedium.classList.add("hidden");
@@ -414,29 +412,29 @@ namespace MemoryGame {
         restartBtn.classList.remove("hidden");
     }
 
-    //Funktion zum verstecken des Restart-Buttons mit CSS Klasse
+    //Funktion zum verstecken des Restart-Buttons (mit CSS Klasse hidden)
     function hideRestartBtn(): void {
         restartBtn.classList.add("hidden");
     }
+    
+    let container: HTMLElement = document.getElementById("cardContainer"); //Variable für das div im HTML, in welches die Karten gepusht werden sollen
+    let stopMoves: boolean = true; //Boolean, um zu erkennen, ob es der erste oder zweite Zug ist (true=erster Zug, false=zweiter Zug)
+    let winCounter: number = 0; //Variable für das Zählen der gefundenen Kartenpaare
 
-    //Variable für das div im HTML, in welches die Karten gepusht werden sollen
-    let container: HTMLElement = document.getElementById("cardContainer"); 
-    let stopMoves: boolean = true; //Boolean für das Begrenzen der Züge
-    let winCounter: number = 0; //Variable für das Zählen der Punkte
 
+    //Funktion um Karte als HTMLElement zu kreieren
     function createCard(grid: string): void {
-        //Container leeren
-        container.innerHTML = "";
-        container.classList.add(grid); //Die richtige Klasse für das Grid in CSS bei Funktionsaufruf als Argument übergeben
+        container.innerHTML = ""; //Container leeren
+        container.classList.add(grid); //Die richtige Klasse für das Grid in CSS wird bei Funktionsaufruf als Argument übergeben
 
-        //Eine Karte als HTML-Element erstellen
-        for (let index: number = 0; index < levelCards.length; index++) { //durch Array itterieren
+        //Eine Karte als HTMLElement erstellen
+        for (let index: number = 0; index < cardDeck.length; index++) { //durch Array itterieren
             let newCard: HTMLElement = document.createElement("div"); //Div erstellen
-            newCard.classList.add("cardDiv" + index); //Klasse und Indexzahl als Klasse hinzufügen
+            newCard.classList.add("cardDiv" + index); //Klasse und Indexzahl als Klasse hinzufügen (um die divs voneinander unterscheiden zu können)
             newCard.innerHTML = "<img src=material/BackCard/Memory-Back.png>"; //Hintergrundbild hinzufügen (Rückseite)
-            newCard.addEventListener("click", function (): void {
-                if (stopMoves == true) { //Boolean ist nur bei ersten zwei Zügen true, danach false => kein aufrufen der Funktion mehr
-                    flipCard(index); //Eventlistener: beim klicken Karte umdrehen
+            newCard.addEventListener("click", function (): void { //Eventlistener neuer Karte hinzufügen
+                if (stopMoves == true) { //Boolean ist nur bei ersten zwei Zügen true, danach false => kein aufrufen der flipCard Funktion mehr
+                    flipCard(index); //flipCard zum Karte umdrehen, entsprechenden Index als Argument übergeben
                  }
             });
             container.appendChild(newCard); //Elemente im Container erstellen
@@ -444,58 +442,56 @@ namespace MemoryGame {
     }
 
     //Karte umdrehen Funktion
-    function flipCard(index: number): void { //Index aus levelCards als Argument übergeben (Aufruf in createCard Funktion)
+    function flipCard(index: number): void { //Index aus cardDeck als Argument übergeben (Aufruf in createCard Funktion)
         let container: HTMLElement = document.querySelector(".cardDiv" + index); //richtigen Container selektieren
-        container.innerHTML = "<img src=" + levelCards[index].pic + ">"; //via innerHTML das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
-        
-        indexSaving.push(index); //beim Klicken wird Index gespeichert, um zu verhindern, dass die gleiche Karte zweimal geklickt werden kann
-        if (indexSaving[0] != indexSaving[1]) { //nur wenn die karten ungleich sind, werden sie verglichen
+        container.innerHTML = "<img src=" + cardDeck[index].pic + ">"; //über innerHTML das jeweilige Hintergrundbild (im Objekt hinterlegt) hinzufügen
+        indexSaveScndCLick.push(index); //beim Klicken wird Index gespeichert, um zu verhindern, dass die gleiche Karte zweimal geklickt werden kann
+        if (indexSaveScndCLick[0] != indexSaveScndCLick[1]) { //nur wenn beim zweiten Klick die Indexe der geklickten Karten ungleich sind, werden sie verglichen (nicht gleiche Karte)
             compareCards(index); //compareCards-Funktion aufrufen um Karten zu vergleichen
-        } else {
-            indexSaving.pop(); //Wenn sie nicht gleich sind wird die gleiche Stelle gelöscht und nichts verglichen
+        } else { //Wenn dieselbe Karte zweimal geklickt wurde,...
+            indexSaveScndCLick.pop(); //...wird die gleiche Stelle gelöscht und nichts verglichen, man muss eine andere Karte auswählen
         }
     }
 
-    let firstCardChoice: number; //Variable, um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
-    let secondCardChoice: number; //Variable, um Vergleichoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
-    let firstIndex: number; //Variable um Index beim ersten Klick zu speichern
-    let secondIndex: number; //Variable um Index beim zweiten Klick zu speichern
+    let firstCardChoice: number; //Variable, um Vergleichsoperator (compare Nummer im Objekt) beim ersten Klick zu speichern
+    let secondCardChoice: number; //Variable, um Vergleichsoperator (compare Nummer im Objekt) beim zweiten Klick zu speichern
+    let firstIndex: number; //Variable, um Index-Stelle der Karte beim ersten Klick zu speichern
+    let secondIndex: number; //Variable, um Index-Stelle der Karte beim zweiten Klick zu speichern
 
     //Funktion um Karten zu vergleichen
     function compareCards(index: number): void {
-        if (firstMove == true) { //wenn Boolean true ist, dann ist es der erste von zwei Zügen
-            firstCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
+        if (firstMove == true) { //Wenn Boolean true ist, dann ist es der erste Zug
+            firstCardChoice = cardDeck[index].compare; //Vergleichszahl wird in Variable gespeichert
             firstIndex = index; //Der Index wird in einer Variable gespeichert
             firstMove = false; //Boolean für den ersten Zug wird auf false gestellt
 
-        } else { //zweiter Zug
-            stopMoves = false; //Nach dem zweiten Zug Boolean auf false setzten, um weiteres klicken zu verhindern
+        } else { //Boolean ist nicht true => Zweiter Zug
+            stopMoves = false; //Nach dem zweiten Zug wird Boolean auf false gesetzt, um weiteres anklicken von Karten zu verhindern
             setTimeout(function (): void { //Damit sich die Karten nach einer bestimmten Zeit wieder umdrehen
-                secondCardChoice = levelCards[index].compare; //!!!!!!!!!! Vergleichszahl wird in Variable gespeichert
+                secondCardChoice = cardDeck[index].compare; //!Fehler in Console? Vergleichszahl wird in Variable gespeichert
                 secondIndex = index; //Der Index wird in einer Variable gespeichert
 
                 if (firstCardChoice == secondCardChoice) { //Variablen vergleichen -> wenn die Variablen gleich sind, dann...
-                    levelCards[firstIndex].found = true; //Gefunden Boolean von beiden Objekten auf true setzen
-                    levelCards[secondIndex].found = true;
+                    cardDeck[firstIndex].found = true; //Gefunden Boolean von beiden Objekten auf true setzen
+                    cardDeck[secondIndex].found = true;
 
                     let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable selektieren
                     container1.classList.add("hidden"); //dem Container die Klasse hidden geben (in CSS definiert), damit Karte verschwindet
                     let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex); //Container von zweiter Karte in Variable sleketieren
                     container2.classList.add("hidden"); 
 
-                    firstMove = true; //Boolean um ersten Zug zu erlauben auf true stellen
-                    stopMoves = true; //Boolean nach dem zweiten Zug wieder auf true setzten, um neue Züge zu ermöglichen
-                    counter(); //Funktion zum Zählen aufrufen
-                    winCounter++; //Variable als Punkte hochzählen
-                    winAlert(); //Gewinnfunktion aufrufen
-                    indexSaving = [];
+                    firstMove = true; //Boolean, um ersten Zug wieder zu erlauben, auf true stellen
+                    stopMoves = true; //Boolean, um anklicken von Karten wieder zu ermöglichen, true stellen
+                    counter(); //Funktion zum Zählen der Punkte aufrufen (für den Punktestand)
+                    winCounter++; //Variable für gefundene Kartenpaare hochzählen (für das zählen bis zum Gewinn-Alert)
+                    winAlert(); //Gewinnfunktion aufrufen (wird nur ausgeführt, wenn bestimmte Anzahl an Kartenpaaren gefunden wurden)
+                    indexSaveScndCLick = []; //Array für das Karten umdrehen wieder leeren
                     
                     if (computerMove == true) { //Wenn der Boolean für den Computerzug true ist, dann...
                         computer(); //Computer Funktion aufrufen
                     }  //ComputerMove Boolean nicht auf false setzen, da der Computer noch einen Zug machen darf, nachdem ein Kartenpaar gefunden wurde
 
-                } else { //Wenn die Variablen nicht gleich sind
-
+                } else { //Wenn die Variablen nicht gleich sind/die Karten kein Paar bilden, ...
                     let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable selektieren
                     container1.innerHTML = "<img src=material/BackCard/Memory-Back.png >"; //Hintergrund wieder auf Rückseite ändern, zum Karte umdrehen
                     let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex); //Container von zweiter Karte in Variable selektieren
@@ -503,7 +499,7 @@ namespace MemoryGame {
 
                     firstMove = true; //Boolean um ersten Zug zu erlauben auf true stellen
                     stopMoves = true; //Boolean nach dem zweiten Zug wieder auf true setzten, um neue Züge zu ermöglichen
-                    indexSaving = [];
+                    indexSaveScndCLick = []; //Array für das Karten umdrehen wieder leeren
 
                     if (computerMove == true) { //Wenn der Computer am Zug ist, dann...
                         computerMove = false; //Boolean auf false setzen -> Computer nicht mehr am Zug
@@ -517,45 +513,45 @@ namespace MemoryGame {
         }
     }
 
-    //Karten im levelCards Array mischen
+    //Karten im cardDeck Array mischen
     function mixCards(): void {
-        levelCards.sort(() => 0.5 - Math.random());
+        cardDeck.sort(() => 0.5 - Math.random());
     }
 
-    let computerCounterHTML: HTMLElement = document.getElementById("counterComputer"); //Variable für <p> Tag in der HTML
-    let playerCounterHTML: HTMLElement = document.getElementById("counterPlayer");
-    let computerPoints: number = 0; //Punkte für den Computer
-    let playerPoints: number = 0; //Punkte für den Spieler
+    let computerCounterHTML: HTMLElement = document.getElementById("counterComputer"); //Variable für <p>-Tag in der HTML (Computer-Punktestand)
+    let playerCounterHTML: HTMLElement = document.getElementById("counterPlayer"); //Variable für <p>-Tag in der HTML (Spieler-Punktestand)
+    let computerPoints: number = 0; //Variable für die Punkte des Computers
+    let playerPoints: number = 0; //VAriable für die Punkte des Spielers
 
-    //Zählen Funktion
+    //Punktestand zählen Funktion
     function counter(): void {
         if (computerMove == true) { //Wenn der Boolean computerMove true ist, ist der Computer am Zug
-            computerPoints++; //=> Variable des Computers +1
+            computerPoints++; //=> Punktestand des Computers +1
             computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total"; //Punkte inner HTML ausgeben
         } else { //wenn Computer nicht dran ist (compterMove Boolean false), dann ist der Spieler am Zug
-            playerPoints++; //=> Variable des Spielers +1
+            playerPoints++; //=> Punktestand des Spielers +1
             playerCounterHTML.innerHTML = "Player: " + playerPoints + " in total"; //Punkte inner HTML ausgeben
         }
     }
 
     //Computer
     function computer(): void {
-        if (computerLock == true) {
+        if (computerLock == true) { //Computer darf nur spielen, wenn Lock true ist, sonst nicht (Computer nach Spielende blockiert, durch Lock auf false)
             let randomNumber: number[] = []; //Leeres Array, in welches  random Zahlen gepusht werden
-            randomNumber.push(Math.floor(Math.random() * maxCards)); //-> *8 = random Zahlen von 0-7 (Easy) ins Array gepusht
-            randomNumber.push(Math.floor(Math.random() * maxCards)); 
+            randomNumber.push(Math.floor(Math.random() * maxCards)); //Richtige Kartenanzahl wird bei Funktionsaufruf vergeben (in Eventlistener von Buttons)
+            randomNumber.push(Math.floor(Math.random() * maxCards)); //Computer pusht zwei random Zahlen in leeres Array
             if (randomNumber[0] != randomNumber[1]) { //Wenn die Nummern ungleich sind...
-                if (levelCards[randomNumber[0]].found == false && levelCards[randomNumber[1]].found == false) { //...Wenn die "simulierten" Index im Array levelCards noch nicht gefunden wurden (Boolean found false)
-                setTimeout(function (): void { //Damit die erste Karte etwas verzögert aufgedeckt wird
-                        flipCard(randomNumber[0]); //Simulierter Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
+                if (cardDeck[randomNumber[0]].found == false && cardDeck[randomNumber[1]].found == false) { //...Wenn die "simulierten" Index (random Zahl) im Array cardDeck noch nicht gefunden wurden (Boolean found ist false)...
+                setTimeout(function (): void { //Erste Karte wird nach kurzer Zeit aufgedeckt
+                        flipCard(randomNumber[0]); //Index (Stelle der Karte) wird mit flipCard aufgerufen (Karte wird dann umgedreht)
                 },         200);
-                setTimeout(function (): void { //Damit die zweite Karte noch verzögerter aufgedeckt wird
-                flipCard(randomNumber[1]);
+                setTimeout(function (): void { //Die zweite Karte wird noch verzögerter aufgedeckt
+                flipCard(randomNumber[1]); //Index der zweiten Karte wird mit flipCard aufgerufen (Karte wird umgedreht)
                 },         350);
                 } else { //Wenn der Boolean found true ist, wurden Karten schon gefunden
                     computer(); //=> nochmal Computer, bis zwei Karten gezogen wurden, die noch nicht gefunden wurden
                 }
-            } else { //Wenn die Nummern gleich sind 
+            } else { //Wenn die Nummern gleich sind...
                 computer(); //=> nochmal Computer, bis die Nummern ungleich sind (damit eine Karte nicht doppelt gezogen werden kann)
             }
         }
@@ -563,58 +559,61 @@ namespace MemoryGame {
 
     //Funktion für den Gewinnalert
     function winAlert(): void { 
-        if (winCounter == maxCardsPair && computerPoints > playerPoints) {  //Wenn die Variable
-            computerLock = false;
-            setTimeout(function (): void {
-            window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
-            restart();
+        //Wenn die Variable für gefundene Kartenpaare gleich der maximalen Kartenanzahl ist & der Computer mehr Punkte hat, als der Spieler...
+        if (winCounter == maxCardsPair && computerPoints > playerPoints) {  
+            computerLock = false; //Computer wird blockiert
+            setTimeout(function (): void { //mit kleiner Verzögerung wird Gewinn-Alert angezeigt
+            window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!"); //Computer als Gewinner wird ausgegeben mit entsprechender Punktzahl
+            restart(); //Nach "okay" klicken beim Alert wird Spiel neu gestartet
         },             500);
+        //Wenn die Variable für gefundene Kartenpaare gleich der maximalen Kartenanzahl ist & der Spieler mehr Punkte hat, als der Computer...
         } else if (winCounter == maxCardsPair && computerPoints < playerPoints) { 
-            computerLock = false;
-            setTimeout(function (): void {
-            window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!");
+            computerLock = false; 
+            setTimeout(function (): void { 
+            window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!"); //Spieler als Gewinner wird ausgegeben mit entsprechender Punktzahl
             restart();
         },             500);
+        //Wenn die Variable für gefundene Kartenpaare gleich der maximalen Kartenanzahl ist & der Spieler und der COmputer gleich viele Punkte haben...
         } else if (winCounter == maxCardsPair &&  computerPoints == playerPoints) { 
-            computerLock = false;
-            setTimeout(function (): void {
-            window.alert("Unentschieden!");
+            computerLock = false; 
+            setTimeout(function (): void { 
+            window.alert("Unentschieden!"); //Unentschieden
             restart();
         },             500);
         }
     } 
 
+    //Restart Funktion (aka ALLES wird zurückgesetzt)
     function restart(): void {
-        for (let index: number = 0; index < easyCards.length; index++) {
+        for (let index: number = 0; index < easyCards.length; index++) { //Alle Karten aus easyCards werden auf nicht gefunden gestellt (Boolean found auf false)
             easyCards[index].found = false;
             }
-        for (let index: number = 0; index < mediumCards.length; index++) { 
+        for (let index: number = 0; index < mediumCards.length; index++) { //Alle Karten aus mediumCards werden auf nicht gefunden gestellt (Boolean found auf false)
             mediumCards[index].found = false;
             }
-        for (let index: number = 0; index < hardCards.length; index++) { 
+        for (let index: number = 0; index < hardCards.length; index++) { //Alle Karten aus hardCards werden auf nicht gefunden gestellt (Boolean found auf false)
             hardCards[index].found = false;
             }
-        levelCards = [];
-        firstMove = true;
-        computerMove = true;
-        showBtns();
-        hideRestartBtn();
-        container.innerHTML = "";
-        computerPoints = 0;
-        playerPoints = 0;
-        computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total";
+        cardDeck = []; //Array, in welches am Anfang Karten gepusht werden, wird geleert
+        firstMove = true; //Ersten Zug erlauben
+        computerMove = true; //Computer Zug erlauben, damit dieser wieder den ersten Zug macht
+        showBtns(); //showBtns Funktion -> Buttons für Schwierigkeitgrade anzeigen
+        hideRestartBtn(); //Restart-Button verstecken
+        container.innerHTML = ""; //Den Container in der HTML-Datei leeren (Karten entfernen)
+        computerPoints = 0; //Punktestand des Computers auf 0 setzten
+        playerPoints = 0; //Punktestand des Spielers auf 0 setzten
+        computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total"; //Punktestand dementsprechend auch innerHTML anpassen
         playerCounterHTML.innerHTML = "Player: " + playerPoints + " in total";
-        winCounter = 0;
-        if (container.classList.contains("containerHard")) {
-            container.classList.remove("containerHard");
-        } else if (container.classList.contains("containerEasyMedium")) { 
-            container.classList.remove("containerEasyMedium");
+        winCounter = 0; //Den Kartenpaar-Zähler für winAlert auf 0 setzen
+        if (container.classList.contains("containerHard")) { //Wenn der container das Grid für den schweren Schwierigkeitsgrad enthalt,...
+            container.classList.remove("containerHard"); //Wird es entfernt
+        } else if (container.classList.contains("containerEasyMedium")) { //Wenn der container das Grid für den leichten oder mittleren Schwierigkeitsgrad enthalt,...
+            container.classList.remove("containerEasyMedium"); //Wird dieses auch entfernt
         }
-        
     }
 
-    restartBtn.addEventListener("click", function (): void {
-        computerLock = false;
-        restart(); 
+    restartBtn.addEventListener("click", function (): void { //Eventlistener für Restart-Button
+        computerLock = false; //Computer wieder erlauben zu spielen
+        restart(); //restart FUnktion aufrufen
     });
 }

@@ -3,14 +3,15 @@ html {
     height: 100%;
     font-family: 'Trebuchet MS', sans-serif;
     color: white;
-    background-image: url(bg3.jpg);
+    background-image: url(bg100.jpg);
     background-size: cover;
     display: flex;
     justify-content: center;
+    font-size: 12px;
 }
 
 .fa-redo-alt {
-    font-size: 30px;
+    font-size: 25px;
     margin:10px;
     cursor: pointer;
     width: 100%;
@@ -77,6 +78,7 @@ button {
     color: white;
     font-family: 'Trebuchet MS', sans-serif;
     text-transform: uppercase;
+    font-size: 12px;
     letter-spacing: 0.2em;
     border-radius: 10rem;
     background: #b10101;
@@ -97,6 +99,6 @@ button:hover {
 footer {
     position: absolute;
     bottom: 10px;
-    right: 50px;
+    right: 360px;
     position: fixed;
 }
