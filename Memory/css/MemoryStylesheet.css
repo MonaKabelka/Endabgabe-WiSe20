@@ -1,7 +1,9 @@
 html {
+    width: 100%;
+    height: 100%;
     font-family: 'Trebuchet MS', sans-serif;
     color: white;
-    background-image: url(bg2.jpg);
+    background-image: url(bg3.jpg);
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -19,20 +21,16 @@ h1 {
     font-size: 30px;
     margin:10px;
     cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
     position: absolute;
-    top: 175px;
-    transition-duration: 0,4s;
-}
-
-.fa-redo-alt:hover {
-    cursor: pointer;
-    box-shadow: 0 8px 10px 0px rgba(50, 50, 50, 0.775)
 }
 
 #wrapper {
-    margin-top: 50px;
+    margin-top: 20px;
     width: 100%;
-    height: 900px;
+    height: 470px;
 }
 
 .hidden {
@@ -51,14 +49,36 @@ h1 {
     grid-gap: 1em;
 }
 
+#buttonsContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 #heading {
-    height: 170px;
-    width: 1000px;
+    height: 80px;
+    width: 500px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+#counterComputer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#counterPlayer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 img {
-    height: 200px;
-    width: 200px;
+    height: 100px;
+    width: 100px;
 }
 
 button {
@@ -80,4 +100,11 @@ button {
 button:hover {
     background-color: rgb(106, 18, 18);
     box-shadow: 0 8px 10px 0px rgba(50, 50, 50, 0.775) 
+}
+
+footer {
+    position: absolute;
+    bottom: 10px;
+    right: 50px;
+    position: fixed;
 }

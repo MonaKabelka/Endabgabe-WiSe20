@@ -362,11 +362,11 @@ namespace MemoryGame {
         levelCards = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren levelCards gespeichert
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
         mixCards(); //Funktionsaufruf für das Mischen des Indexes
-        showRestartBtn();
-        maxCards = 8;
-        maxCardsPair = 4;
-        computerLock = true;
-        computer(); // Funktionsaufruf für den >Spielzug des Computers
+        showRestartBtn(); //Restartbutton wird angezeigt
+        maxCards = 8; //Die höchste ANzahl an Karten für den Computer
+        maxCardsPair = 4; //Die höchste Anzahl an Kartenpaaren für den Gewinn-Alert
+        computerLock = true; //Boolean um Computer zu sperren auf true setzen (damit Botfunktion ablaufen kann)
+        computer(); // Funktionsaufruf für den Spielzug des Computers
     });
 
     btnMedium.addEventListener("click", function (): void {
@@ -402,16 +402,19 @@ namespace MemoryGame {
         btnHard.classList.add("hidden");
     }
 
+    //Funktion zum zeigen der Buttons (CSS Klasse entfernen)
     function showBtns(): void {
         btnEasy.classList.remove("hidden");
         btnMedium.classList.remove("hidden");
         btnHard.classList.remove("hidden");
     }
 
+    //Funktion zum zeigen des Restart-Buttons (CSS Klasse entfernen)
     function showRestartBtn(): void {
         restartBtn.classList.remove("hidden");
     }
 
+    //Funktion zum verstecken des Restart-Buttons mit CSS Klasse
     function hideRestartBtn(): void {
         restartBtn.classList.add("hidden");
     }
@@ -469,7 +472,7 @@ namespace MemoryGame {
         } else { //zweiter Zug
             stopMoves = false; //Nach dem zweiten Zug Boolean auf false setzten, um weiteres klicken zu verhindern
             setTimeout(function (): void { //Damit sich die Karten nach einer bestimmten Zeit wieder umdrehen
-                secondCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
+                secondCardChoice = levelCards[index].compare; //!!!!!!!!!! Vergleichszahl wird in Variable gespeichert
                 secondIndex = index; //Der Index wird in einer Variable gespeichert
                 if (firstCardChoice == secondCardChoice) { //Variablen vergleichen -> wenn die Variablen gleich sind, dann...
                     levelCards[firstIndex].found = true; //Gefunden Boolean von beiden Objekten auf true setzen
@@ -561,9 +564,10 @@ namespace MemoryGame {
         }
     }
 
+    //Funktion für den Gewinnalert
     function winAlert(): void { 
         // setTimeout(function (): void {
-        if (winCounter == maxCardsPair && computerPoints > playerPoints) { 
+        if (winCounter == maxCardsPair && computerPoints > playerPoints) {  //Wenn die Variable
             computerLock = false;
             setTimeout(function (): void {
             window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!");
@@ -586,6 +590,15 @@ namespace MemoryGame {
     } 
 
     function restart(): void {
+        for (let index: number = 0; index < easyCards.length; index++) {
+            easyCards[index].found = false;
+            }
+        for (let index: number = 0; index < mediumCards.length; index++) { 
+            mediumCards[index].found = false;
+            }
+        for (let index: number = 0; index < hardCards.length; index++) { 
+            hardCards[index].found = false;
+            }
         levelCards = [];
         firstMove = true;
         computerMove = true;
@@ -596,17 +609,17 @@ namespace MemoryGame {
         playerPoints = 0;
         computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total";
         playerCounterHTML.innerHTML = "Player: " + playerPoints + " in total";
+        winCounter = 0;
         if (container.classList.contains("containerHard")) {
             container.classList.remove("containerHard");
         } else if (container.classList.contains("containerEasyMedium")) { 
             container.classList.remove("containerEasyMedium");
         }
-        // CONSOLENAUSGABE STIMMT NICHT GANZ? Computer spielt nach neustart doppelt wenn man zu schnell drückt??
+        
     }
 
     restartBtn.addEventListener("click", function (): void {
         computerLock = false;
         restart(); 
     });
-
 }
