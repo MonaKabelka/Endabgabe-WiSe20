@@ -1,6 +1,5 @@
 namespace MemoryGame {
 
-
     //Interface für Objekte von Karten mit Keys für: Hintergrundbild, Vergleichsindikator für das passende Kartenpaar, und ob die Karte gefunden wurde oder nicht
     interface CardsInterface {
         pic: string;
@@ -341,6 +340,7 @@ namespace MemoryGame {
     let maxCards: number; //Variable für maximale Anzahl an Karten (entsprechend nach Schwirigkeitsgrad) für Computer
     let maxCardsPair: number; //Variable für maximale Anzahl an Kartenpaaren (entsprechend nach Schwirigkeitsgrad) für winAlert
     let computerLock: boolean = true; //Boolean nach Ende des Spiels auf false setzen, damit Computer blockiert ist
+    let indexSaving: number[] = [];
 
     //Buttons erstellen in Wrapper
     let btnEasy: HTMLButtonElement = document.createElement("button");
@@ -443,8 +443,6 @@ namespace MemoryGame {
         }
     }
 
-    let indexSaving: number[] = [];
-
     //Karte umdrehen Funktion
     function flipCard(index: number): void { //Index aus levelCards als Argument übergeben (Aufruf in createCard Funktion)
         let container: HTMLElement = document.querySelector(".cardDiv" + index); //richtigen Container selektieren
@@ -469,18 +467,19 @@ namespace MemoryGame {
             firstCardChoice = levelCards[index].compare; //Vergleichszahl wird in Variable gespeichert
             firstIndex = index; //Der Index wird in einer Variable gespeichert
             firstMove = false; //Boolean für den ersten Zug wird auf false gestellt
+
         } else { //zweiter Zug
             stopMoves = false; //Nach dem zweiten Zug Boolean auf false setzten, um weiteres klicken zu verhindern
             setTimeout(function (): void { //Damit sich die Karten nach einer bestimmten Zeit wieder umdrehen
                 secondCardChoice = levelCards[index].compare; //!!!!!!!!!! Vergleichszahl wird in Variable gespeichert
                 secondIndex = index; //Der Index wird in einer Variable gespeichert
+
                 if (firstCardChoice == secondCardChoice) { //Variablen vergleichen -> wenn die Variablen gleich sind, dann...
                     levelCards[firstIndex].found = true; //Gefunden Boolean von beiden Objekten auf true setzen
                     levelCards[secondIndex].found = true;
 
                     let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable selektieren
                     container1.classList.add("hidden"); //dem Container die Klasse hidden geben (in CSS definiert), damit Karte verschwindet
-
                     let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex); //Container von zweiter Karte in Variable sleketieren
                     container2.classList.add("hidden"); 
 
@@ -499,17 +498,16 @@ namespace MemoryGame {
 
                     let container1: HTMLElement = document.querySelector(".cardDiv" + firstIndex); //Container von erster Karte in Variable selektieren
                     container1.innerHTML = "<img src=material/BackCard/Memory-Back.png >"; //Hintergrund wieder auf Rückseite ändern, zum Karte umdrehen
-
                     let container2: HTMLElement = document.querySelector(".cardDiv" + secondIndex); //Container von zweiter Karte in Variable selektieren
                     container2.innerHTML = "<img src=material/BackCard/Memory-Back.png >"; //Hintergrund wieder auf Rückseite ändern, zum Karte umdrehen
 
                     firstMove = true; //Boolean um ersten Zug zu erlauben auf true stellen
                     stopMoves = true; //Boolean nach dem zweiten Zug wieder auf true setzten, um neue Züge zu ermöglichen
-                    // Karten wieder umdrehen
                     indexSaving = [];
 
                     if (computerMove == true) { //Wenn der Computer am Zug ist, dann...
                         computerMove = false; //Boolean auf false setzen -> Computer nicht mehr am Zug
+
                     } else { //Wenn Computer nicht am Zug ist, dann...
                         computerMove = true; //Boolean auf true setzen => Computer hat den nächsten Zug
                         computer(); //Computer Funktion aufrufen -> Computer macht seinen Zug
@@ -526,7 +524,6 @@ namespace MemoryGame {
 
     let computerCounterHTML: HTMLElement = document.getElementById("counterComputer"); //Variable für <p> Tag in der HTML
     let playerCounterHTML: HTMLElement = document.getElementById("counterPlayer");
-
     let computerPoints: number = 0; //Punkte für den Computer
     let playerPoints: number = 0; //Punkte für den Spieler
 
@@ -566,7 +563,6 @@ namespace MemoryGame {
 
     //Funktion für den Gewinnalert
     function winAlert(): void { 
-        // setTimeout(function (): void {
         if (winCounter == maxCardsPair && computerPoints > playerPoints) {  //Wenn die Variable
             computerLock = false;
             setTimeout(function (): void {
@@ -586,7 +582,6 @@ namespace MemoryGame {
             restart();
         },             500);
         }
-    // },             500);
     } 
 
     function restart(): void {
