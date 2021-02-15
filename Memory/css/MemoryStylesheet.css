@@ -9,14 +9,6 @@ html {
     justify-content: center;
 }
 
-h1 {
-    color: rgb(255, 255, 255);
-    text-transform: uppercase; 
-    letter-spacing: 0.5em;
-    font-size: 40px;
-    text-shadow: 2px 2px #ffffff97;
-}
-
 .fa-redo-alt {
     font-size: 30px;
     margin:10px;
