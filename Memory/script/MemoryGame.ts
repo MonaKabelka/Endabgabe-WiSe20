@@ -1,5 +1,5 @@
 namespace MemoryGame {
-
+    //Funktioniert für Bildschirmauflösung 1280x800
     //Interface für Objekte von Karten
     interface CardsInterface {
         pic: string; //Key fürs Hintergrundbild
@@ -575,21 +575,21 @@ namespace MemoryGame {
             setTimeout(function (): void { //mit kleiner Verzögerung wird Gewinn-Alert angezeigt
             window.alert("The computer won with " + computerPoints + " points! Try again!"); //Computer als Gewinner wird ausgegeben mit entsprechender Punktzahl
             restart(); //Nach "okay" klicken beim Alert wird Spiel neu gestartet
-        },             750); //Timeout auf 750, damit die Progress-Anzeige noch voll werden kann, vor dem Alert
+        },             600); //Timeout auf 750, damit die Progress-Anzeige noch voll werden kann, vor dem Alert
         //Wenn die Variable für gefundene Kartenpaare gleich der maximalen Kartenanzahl ist & der Spieler mehr Punkte hat, als der Computer...
         } else if (winCounter == maxCardsPair && computerPoints < playerPoints) { 
             computerLock = false; 
             setTimeout(function (): void { 
             window.alert("Congratulations! YOU won with " + playerPoints + " points!"); //Spieler als Gewinner wird ausgegeben mit entsprechender Punktzahl
             restart();
-        },             750);
+        },             600);
         //Wenn die Variable für gefundene Kartenpaare gleich der maximalen Kartenanzahl ist & der Spieler und der COmputer gleich viele Punkte haben...
         } else if (winCounter == maxCardsPair &&  computerPoints == playerPoints) { 
             computerLock = false; 
             setTimeout(function (): void { 
-            window.alert("The Game ended in a draw! Return Match!"); //Unentschieden
+            window.alert("The game ended in a draw! Return match?"); //Unentschieden
             restart();
-        },             750);
+        },             600);
         }
     } 
 
