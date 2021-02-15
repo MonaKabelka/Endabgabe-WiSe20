@@ -329,6 +329,8 @@ namespace MemoryGame {
 
     //Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades kommen
     let cardDeck: CardsInterface[] = [];
+
+    
     
     let firstMove: boolean = true; //Boolean, für den ersten/zweiten Zug
     let computerMove: boolean = true; //Boolean für den Computer Zug
@@ -337,6 +339,7 @@ namespace MemoryGame {
     let maxCardsPair: number; //Variable für maximale Anzahl an Kartenpaaren (entsprechend nach Schwirigkeitsgrad) für winAlert
     let computerLock: boolean = true; //Boolean nach Ende des Spiels auf false setzen, damit Computer blockiert ist
     let indexSaveScndCLick: number[] = []; //Index von geglickten Karten in diesem Array speichern, um zu verhindern, dass eine Karte zweimal geklickt werden kann (siehe flipCard)
+    const display: HTMLElement = document.getElementById("display");
 
     const btnWrapper: HTMLElement = document.getElementById("buttonsContainer"); //Wrapper für die Buttons als Variable
     
@@ -356,6 +359,7 @@ namespace MemoryGame {
     //Eventlistener für die Buttons
     btnEasy.addEventListener("click", function (): void {
         console.log("Difficulty: Easy");
+        display.classList.remove("hidden"); //Display mit Punkteanzeige etc anzeigen lassen
         hideBtns(); //Die Buttons für die Schwierigkeitsgrade werden versteckt mit einer Klasse in CSS
         cardDeck = easyCards; //Alle Karten aus dem easyCards Array sind nun im zuvor leeren cardDeck gespeichert
         createCard("containerEasyMedium"); //Karten werden in Container kreiirt, das Argument beschreibt die richtige Klasse für das Grid (in CSS)
@@ -365,10 +369,12 @@ namespace MemoryGame {
         maxCardsPair = 4; //Die höchste Anzahl an Kartenpaaren für den Gewinn-Alert
         computerLock = true; //Boolean, um Computer zu sperren auf true setzen (damit Botfunktion überhaupt ablaufen kann)
         computer(); //Funktionsaufruf für den Spielzug des Computers, damit dieser anfängt
+        progress(); //Aufruf der progress Funktion, um maximale Kartenanzahl innerHTML zu aktualisieren
     });
 
     btnMedium.addEventListener("click", function (): void {
         console.log("Difficulty: Medium");
+        display.classList.remove("hidden");
         hideBtns();
         cardDeck = mediumCards; //Alle Karten aus dem mediumCards Array sind nun im zuvor leeren cardDeck gespeichert
         createCard("containerEasyMedium");
@@ -378,10 +384,12 @@ namespace MemoryGame {
         maxCardsPair = 8; //Die höchste Anzahl an Kartenpaaren für den Gewinn-Alert
         computerLock = true;
         computer();
+        progress();
     });
 
     btnHard.addEventListener("click", function (): void {
         console.log("Difficulty: Hard");
+        display.classList.remove("hidden");
         hideBtns();
         cardDeck = hardCards; //Alle Karten aus dem hardCards Array sind nun im zuvor leeren cardDeck gespeichert
         createCard("containerHard");
@@ -391,6 +399,7 @@ namespace MemoryGame {
         maxCardsPair = 16; //Die höchste Anzahl an Kartenpaaren für den Gewinn-Alert
         computerLock = true;
         computer();
+        progress();
     });
 
     //Funktion zum verstecken von den Buttons (mit CSS Klasse hidden)
@@ -486,6 +495,7 @@ namespace MemoryGame {
                     winCounter++; //Variable für gefundene Kartenpaare hochzählen (für das zählen bis zum Gewinn-Alert)
                     winAlert(); //Gewinnfunktion aufrufen (wird nur ausgeführt, wenn bestimmte Anzahl an Kartenpaaren gefunden wurden)
                     indexSaveScndCLick = []; //Array für das Karten umdrehen wieder leeren
+                    progress();
                     
                     if (computerMove == true) { //Wenn der Boolean für den Computerzug true ist, dann...
                         computer(); //Computer Funktion aufrufen
@@ -563,23 +573,23 @@ namespace MemoryGame {
         if (winCounter == maxCardsPair && computerPoints > playerPoints) {  
             computerLock = false; //Computer wird blockiert
             setTimeout(function (): void { //mit kleiner Verzögerung wird Gewinn-Alert angezeigt
-            window.alert("Der Computer hat mit " + computerPoints + " Punkten gewonnen!"); //Computer als Gewinner wird ausgegeben mit entsprechender Punktzahl
+            window.alert("The computer won with " + computerPoints + " points! Try again!"); //Computer als Gewinner wird ausgegeben mit entsprechender Punktzahl
             restart(); //Nach "okay" klicken beim Alert wird Spiel neu gestartet
-        },             500);
+        },             750); //Timeout auf 750, damit die Progress-Anzeige noch voll werden kann, vor dem Alert
         //Wenn die Variable für gefundene Kartenpaare gleich der maximalen Kartenanzahl ist & der Spieler mehr Punkte hat, als der Computer...
         } else if (winCounter == maxCardsPair && computerPoints < playerPoints) { 
             computerLock = false; 
             setTimeout(function (): void { 
-            window.alert("Du hast mit " + playerPoints + " Punkten gewonnen!"); //Spieler als Gewinner wird ausgegeben mit entsprechender Punktzahl
+            window.alert("Congratulations! YOU won with " + playerPoints + " points!"); //Spieler als Gewinner wird ausgegeben mit entsprechender Punktzahl
             restart();
-        },             500);
+        },             750);
         //Wenn die Variable für gefundene Kartenpaare gleich der maximalen Kartenanzahl ist & der Spieler und der COmputer gleich viele Punkte haben...
         } else if (winCounter == maxCardsPair &&  computerPoints == playerPoints) { 
             computerLock = false; 
             setTimeout(function (): void { 
-            window.alert("Unentschieden!"); //Unentschieden
+            window.alert("The Game ended in a draw! Return Match!"); //Unentschieden
             restart();
-        },             500);
+        },             750);
         }
     } 
 
@@ -605,6 +615,9 @@ namespace MemoryGame {
         computerCounterHTML.innerHTML = "Computer: " + computerPoints + " in total"; //Punktestand dementsprechend auch innerHTML anpassen
         playerCounterHTML.innerHTML = "Player: " + playerPoints + " in total";
         winCounter = 0; //Den Kartenpaar-Zähler für winAlert auf 0 setzen
+        maxCardsPair = 0; //Maximale Kartenpaaranzahl für progress zurücksetzten
+        progress(); //progress Anzeige aktualisieren/zurücksetzen
+        display.classList.add("hidden"); //Display verstecken
         if (container.classList.contains("containerHard")) { //Wenn der container das Grid für den schweren Schwierigkeitsgrad enthalt,...
             container.classList.remove("containerHard"); //Wird es entfernt
         } else if (container.classList.contains("containerEasyMedium")) { //Wenn der container das Grid für den leichten oder mittleren Schwierigkeitsgrad enthalt,...
@@ -616,4 +629,10 @@ namespace MemoryGame {
         computerLock = false; //Computer wieder erlauben zu spielen
         restart(); //restart FUnktion aufrufen
     });
+
+    function progress(): void {
+    document.querySelector(".chart").setAttribute("style", "width:" + ((winCounter * 100) / maxCardsPair) + "%");
+    document.getElementById("progressOutput").innerHTML = winCounter + " out of " + maxCardsPair + " pairs found";
+    }
+
 }

@@ -10,6 +10,34 @@ html {
     font-size: 12px;
 }
 
+.chartWrapper {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.308);
+    border-radius: 7px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.chartWrapper .chart {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background: rgb(255, 255, 255);
+    transition: 1s;
+    border-radius: 4px;
+}
+
+#progressOutput {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .fa-redo-alt {
     font-size: 25px;
     margin:10px;

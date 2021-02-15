@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Game</title>
+    <title>Magic Memory</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
     <link rel="stylesheet" href="css/MemoryStylesheet.css">
     <script src="script/MemoryGame.js" defer></script>
 </head>
 
 <body>
-    
-    <img id="heading" src="material/headline.png"> 
-    <div id="buttonsContainer"><i class="fas fa-redo-alt hidden"></i></div> 
-    <p id="counterComputer">Computer: 0 in total</p>
-    <p id="counterPlayer">Player: 0 in total</p>
-    
-    <main>
-    <div id="wrapper">
-        <div id="cardContainer" class="">
 
-        </div>  
+    <img id="heading" src="material/headline.png">
+    <div id="buttonsContainer"><i class="fas fa-redo-alt hidden"></i></div>
+    <div id="display" class="hidden">
+        <div class="chartWrapper">
+            <div class="chart"></div>
+        </div>
+        <p id="progressOutput">0 out of 0 pairs found</p>
+        <p id="counterComputer">Computer: 0 in total</p>
+        <p id="counterPlayer">Player: 0 in total</p>
     </div>
+
+    <main>
+        <div id="wrapper">
+            <div id="cardContainer" class="">
+            </div>
+        </div>
     </main>
-    
+
 </body>
 
 <footer> <br> Mona Kabelka, Matrikelnummer: 266238 </footer>
