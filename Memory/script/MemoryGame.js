@@ -319,6 +319,7 @@ var MemoryGame;
     ];
     //Leeres Array, in welches die Karten des ausgewählten Schwierigkeitsgrades kommen
     var cardDeck = [];
+    // Viele Variablen
     var firstMove = true; //Boolean, für den ersten/zweiten Zug
     var computerMove = true; //Boolean für den Computer Zug
     var restartBtn = document.querySelector(".fa-redo-alt"); //Variable für den Restart Button
@@ -540,7 +541,7 @@ var MemoryGame;
             setTimeout(function () {
                 window.alert("The computer won with " + computerPoints + " points! Try again!"); //Computer als Gewinner wird ausgegeben mit entsprechender Punktzahl
                 restart(); //Nach "okay" klicken beim Alert wird Spiel neu gestartet
-            }, 600); //Timeout auf 750, damit die Progress-Anzeige noch voll werden kann, vor dem Alert
+            }, 600); //Timeout auf 600, damit die Progress-Anzeige noch voll werden kann, vor dem Alert
             //Wenn die Variable für gefundene Kartenpaare gleich der maximalen Kartenanzahl ist & der Spieler mehr Punkte hat, als der Computer...
         }
         else if (winCounter == maxCardsPair && computerPoints < playerPoints) {
