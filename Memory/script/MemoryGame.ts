@@ -494,7 +494,7 @@ namespace MemoryGame {
                     winCounter++; //Variable für gefundene Kartenpaare hochzählen (für das zählen bis zum Gewinn-Alert)
                     winAlert(); //Gewinnfunktion aufrufen (wird nur ausgeführt, wenn bestimmte Anzahl an Kartenpaaren gefunden wurden)
                     indexSaveScndCLick = []; //Array für das Karten umdrehen wieder leeren
-                    progress();
+                    progress(); //Den Fortschritt der bereits gefundenen Karten updaten
                     
                     if (computerMove == true) { //Wenn der Boolean für den Computerzug true ist, dann...
                         computer(); //Computer Funktion aufrufen
@@ -626,11 +626,12 @@ namespace MemoryGame {
 
     restartBtn.addEventListener("click", function (): void { //Eventlistener für Restart-Button
         computerLock = false; //Computer wieder erlauben zu spielen
-        restart(); //restart FUnktion aufrufen
+        restart(); //restart Funktion aufrufen
     });
 
+    //Funktion um Fortschritt im Balken anzuzeigen
     function progress(): void {
-    document.querySelector(".chart").setAttribute("style", "width:" + ((winCounter * 100) / maxCardsPair) + "%");
-    document.getElementById("progressOutput").innerHTML = winCounter + " out of " + maxCardsPair + " pairs found";
+    document.querySelector(".chart").setAttribute("style", "width:" + ((winCounter * 100) / maxCardsPair) + "%"); //Per setAttribut den Style inner HTML verändern (die Weite, also der Fortschritt in Prozent)
+    document.getElementById("progressOutput").innerHTML = winCounter + " out of " + maxCardsPair + " pairs found"; //Den Fortschritt als ganze Zahlen innerHTML angeben
     }
 }
