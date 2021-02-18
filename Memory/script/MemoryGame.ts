@@ -338,7 +338,7 @@ namespace MemoryGame {
     let maxCardsPair: number; //Variable für maximale Anzahl an Kartenpaaren (entsprechend nach Schwirigkeitsgrad) für winAlert
     let computerLock: boolean = true; //Boolean nach Ende des Spiels auf false setzen, damit Computer blockiert ist
     let indexSaveScndCLick: number[] = []; //Index von geglickten Karten in diesem Array speichern, um zu verhindern, dass eine Karte zweimal geklickt werden kann (siehe flipCard)
-    const display: HTMLElement = document.getElementById("display");
+    const display: HTMLElement = document.getElementById("display"); 
 
     const btnWrapper: HTMLElement = document.getElementById("buttonsContainer"); //Wrapper für die Buttons als Variable
     
