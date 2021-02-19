@@ -1,4 +1,3 @@
-namespace MemoryGame {
     //Funktioniert für Bildschirmauflösung 1280x800
     //Interface für Objekte von Karten
     interface CardsInterface {
@@ -634,4 +633,3 @@ namespace MemoryGame {
     document.querySelector(".chart").setAttribute("style", "width:" + ((winCounter * 100) / maxCardsPair) + "%"); //Per setAttribut den Style inner HTML verändern (die Weite, also der Fortschritt in Prozent)
     document.getElementById("progressOutput").innerHTML = winCounter + " out of " + maxCardsPair + " pairs found"; //Den Fortschritt als ganze Zahlen innerHTML angeben
     }
-}
