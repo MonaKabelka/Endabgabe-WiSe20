@@ -451,7 +451,7 @@ var MemoryGame;
         else { //Boolean ist nicht true => Zweiter Zug
             stopMoves = false; //Nach dem zweiten Zug wird Boolean auf false gesetzt, um weiteres anklicken von Karten zu verhindern
             setTimeout(function () {
-                secondCardChoice = cardDeck[index].compare; //!Fehler in Console? Vergleichszahl wird in Variable gespeichert
+                secondCardChoice = cardDeck[index].compare; // Vergleichszahl wird in Variable gespeichert !!!BUG: Wenn restart geklickt wird, während der Computer noch läuft, kann nicht mehr verglichen werden und Fehler tritt auf!!!
                 secondIndex = index; //Der Index wird in einer Variable gespeichert
                 if (firstCardChoice == secondCardChoice) { //Variablen vergleichen -> wenn die Variablen gleich sind, dann...
                     cardDeck[firstIndex].found = true; //Gefunden Boolean von beiden Objekten auf true setzen
@@ -466,7 +466,7 @@ var MemoryGame;
                     winCounter++; //Variable für gefundene Kartenpaare hochzählen (für das zählen bis zum Gewinn-Alert)
                     winAlert(); //Gewinnfunktion aufrufen (wird nur ausgeführt, wenn bestimmte Anzahl an Kartenpaaren gefunden wurden)
                     indexSaveScndCLick = []; //Array für das Karten umdrehen wieder leeren
-                    progress();
+                    progress(); //Den Fortschritt der bereits gefundenen Karten updaten
                     if (computerMove == true) { //Wenn der Boolean für den Computerzug true ist, dann...
                         computer(); //Computer Funktion aufrufen
                     } //ComputerMove Boolean nicht auf false setzen, da der Computer noch einen Zug machen darf, nachdem ein Kartenpaar gefunden wurde
@@ -594,11 +594,12 @@ var MemoryGame;
     }
     restartBtn.addEventListener("click", function () {
         computerLock = false; //Computer wieder erlauben zu spielen
-        restart(); //restart FUnktion aufrufen
+        restart(); //restart Funktion aufrufen
     });
+    //Funktion um Fortschritt im Balken anzuzeigen
     function progress() {
-        document.querySelector(".chart").setAttribute("style", "width:" + ((winCounter * 100) / maxCardsPair) + "%");
-        document.getElementById("progressOutput").innerHTML = winCounter + " out of " + maxCardsPair + " pairs found";
+        document.querySelector(".chart").setAttribute("style", "width:" + ((winCounter * 100) / maxCardsPair) + "%"); //Per setAttribut den Style inner HTML verändern (die Weite, also der Fortschritt in Prozent)
+        document.getElementById("progressOutput").innerHTML = winCounter + " out of " + maxCardsPair + " pairs found"; //Den Fortschritt als ganze Zahlen innerHTML angeben
     }
 })(MemoryGame || (MemoryGame = {}));
 //# sourceMappingURL=MemoryGame.js.map

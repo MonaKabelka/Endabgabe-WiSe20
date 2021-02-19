@@ -476,7 +476,7 @@ namespace MemoryGame {
         } else { //Boolean ist nicht true => Zweiter Zug
             stopMoves = false; //Nach dem zweiten Zug wird Boolean auf false gesetzt, um weiteres anklicken von Karten zu verhindern
             setTimeout(function (): void { //Damit sich die Karten nach einer bestimmten Zeit wieder umdrehen
-                secondCardChoice = cardDeck[index].compare; //!Fehler in Console? Vergleichszahl wird in Variable gespeichert
+                secondCardChoice = cardDeck[index].compare; // Vergleichszahl wird in Variable gespeichert !!!BUG: Wenn restart geklickt wird, während der Computer noch läuft, kann nicht mehr verglichen werden und Fehler tritt auf!!!
                 secondIndex = index; //Der Index wird in einer Variable gespeichert
 
                 if (firstCardChoice == secondCardChoice) { //Variablen vergleichen -> wenn die Variablen gleich sind, dann...
